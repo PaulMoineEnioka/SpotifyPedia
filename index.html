@@ -65,7 +65,10 @@
         <th>Writers</th>
         <th>Description</th>
     </tr>
-</table></div><script>
+</table>
+<h2 id="not-found" style="display: none">No contend found.</h2>
+</div>
+<script>
 function clearTable(table) {
     var rows = table.rows;
     var i = rows.length;
@@ -76,6 +79,7 @@ function clearTable(table) {
 function populate() {
     let title = document.getElementById("input-box").value;
     let table = document.getElementById("tracks");
+    let not_found = document.getElementById("not-found");
     clearTable(table);
     table.style.display = '';
     fetch(`http://dbpedia.org/sparql?query=SELECT%20DISTINCT%20?Name%20?Desc%20(GROUP_CONCAT(DISTINCT%20?Genres;%20SEPARATOR="||")%20AS%20?Genres)%20(GROUP_CONCAT(DISTINCT%20?Artists;%20SEPARATOR="||")%20AS%20?Artists)%20(GROUP_CONCAT(DISTINCT%20?Albums;%20SEPARATOR="||")%20AS%20?Albums)%20(GROUP_CONCAT(DISTINCT%20?ReleaseDates;%20SEPARATOR="||")%20AS%20?ReleaseDates)%20(GROUP_CONCAT(DISTINCT%20?Producers;%20SEPARATOR="||")%20AS%20?Producers)%20(GROUP_CONCAT(DISTINCT%20?RecordLabels;%20SEPARATOR="||")%20AS%20?RecordLabels)%20(GROUP_CONCAT(DISTINCT%20?Writers;%20SEPARATOR="||")%20AS%20?Writers)%20WHERE%20{%20?Track%20rdf:type%20dbo:Single.%20?Track%20rdfs:label%20?Name.%20?Track%20dbo:album%20?AlbumsLinks.%20?Track%20dbo:genre%20?GenresLinks.%20?Track%20dbo:musicalArtist%20?ArtistsLinks.%20?Track%20dbo:releaseDate%20?ReleaseDates.%20OPTIONAL%20{%20?Track%20dbo:abstract%20?Desc.%20FILTER(langMatches(lang(?Desc),%20"en")).%20}%20OPTIONAL%20{%20?Track%20dbo:producer%20?ProducersLink.%20?ProducersLink%20rdfs:label%20?Producers.%20FILTER(langMatches(lang(?Producers),%20"en")).%20}%20OPTIONAL%20{%20?Track%20dbo:recordLabel%20?LabelsLinks.%20?LabelsLinks%20rdfs:label%20?RecordLabels.%20FILTER(langMatches(lang(?RecordLabels),%20"en")).%20}%20OPTIONAL%20{%20?Track%20dbo:writer%20?WritersLinks.%20?WritersLinks%20rdfs:label%20?Writers.%20FILTER(langMatches(lang(?Writers),%20"en")).%20}%20?AlbumsLinks%20rdfs:label%20?Albums.%20?GenresLinks%20rdfs:label%20?Genres.%20?ArtistsLinks%20rdfs:label%20?Artists.%20FILTER(regex(?Name,%20".*${title}.*")).%20FILTER(langMatches(lang(?Name),%20"en")).%20FILTER(langMatches(lang(?Albums),%20"en")).%20FILTER(langMatches(lang(?Genres),%20"en")).%20FILTER(langMatches(lang(?Artists),%20"en")).%20}%20GROUP%20BY%20?Name%20?Desc`, {
@@ -86,12 +90,11 @@ function populate() {
     }).then(response => response.json()).then(function (data) {
         let tracks = data.results.bindings;
         if (tracks.length == 0) {
-            table.innerHTML = '';
-            let h2 = document.createElement("h2");
-            let textnode = document.createTextNode("No content found.");
-            h2.appendChild(textnode); 
-            table.appendChild(h2);
+            table.style.display = 'none';
+            not_found.style.display='';
+            return;
         }
+        not_found.style.display='none';
         return tracks.map(function (track) {
             let row = table.insertRow(table.length);
             var cell1 = row.insertCell(0);
