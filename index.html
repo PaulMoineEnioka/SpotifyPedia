@@ -6,11 +6,21 @@
     <meta charset="utf-8">
     <title>Semantic Web</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+      table, td, th {
+        border: 1px solid black;
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      </style>
 </head>
 
 <body>
 
-    <table id="tracks" style="width:100%">
+    <table id="tracks">
         <tr>
             <th>Name</th>
             <th>Genres</th>
@@ -20,6 +30,7 @@
             <th>Producers</th>
             <th>Record Labels</th>
             <th>Writers</th>
+            <th>Description</th>
         </tr>
     </table>
     <script>
@@ -31,6 +42,7 @@
             })
             .then(response => response.json())
             .then(function(data) {
+                console.log(data);
                 let tracks = data.results.bindings;
                 return tracks.map(function(track) {
                     let table = document.getElementById("tracks");
@@ -43,6 +55,7 @@
                     var cell6 = row.insertCell(5);
                     var cell7 = row.insertCell(6);
                     var cell8 = row.insertCell(7);
+                    var cell9 = row.insertCell(8);
                     cell1.innerHTML = track.Name.value;
                     cell2.innerHTML = track.Genres.value;
                     cell3.innerHTML = track.Albums.value;
@@ -51,6 +64,7 @@
                     cell6.innerHTML = track.Producers.value;
                     cell7.innerHTML = track.RecordLabels.value;
                     cell8.innerHTML = track.Writers.value;
+                    cell9.innerHTML = track.Desc.value;
                 })
             }).catch(err => {
                 console.log(err);
