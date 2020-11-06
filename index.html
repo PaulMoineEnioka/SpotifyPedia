@@ -1,0 +1,20 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Semantic Web</title>
+
+  <link rel="stylesheet" href="css/styles.css?v=1.0">
+
+</head>
+
+<body>
+  <script>
+    fetch('http://dbpedia.org/sparql?query=select distinct ?Song ?Title ?Date ?Album ?Genre ?Artist where { ?Song rdf:type dbo:MusicalWork. ?Song dbp:title ?Title. ?Song dbo:album ?Album. ?Song dbo:musicalArtist ?Artist. ?Song dbo:genre ?Genre. FILTER(regex(?Title, ".*Needed Me*"))} LIMIT 100')
+        .then(response => response.json())
+        .then(data => console.log(data));
+  </script>
+</body>
+</html>
