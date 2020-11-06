@@ -9,34 +9,48 @@
 
     <body>
 
-        <table style="width:100%">
+        <table id="tracks" style="width:100%">
             <tr>
-                <th>Title</th>
-                <th>Artist</th>
-                <th>Artist</th>
-                <th>Release Date</th>
-                <th>Genre</th>
+                <th>Name</th>
+                <th>Genres</th>
+                <th>Albums</th>
+                <th>Artists</th>
+                <th>Release Dates</th>
+                <th>Producers</th>
+                <th>Record Labels</th>
+                <th>Writers</th>
             </tr>
         </table>
         <script>
-            fetch('http://dbpedia.org/sparql?query=select distinct ?Song ?Title ?Date ?Album ?Genre ?Artist where { ?Song rdf:type dbo:MusicalWork. ?Song dbp:title ?Title. ?Song dbo:album ?Album. ?Song dbo:musicalArtist ?Artist. ?Song dbo:genre ?Genre. FILTER(regex(?Title, ".*Needed Me*"))} LIMIT 100', {
+            fetch('\"http://dbpedia.org/sparql?query=SELECT%20DISTINCT%20?Name%20?Desc%20(GROUP_CONCAT(DISTINCT%20?Genres;%20SEPARATOR="||")%20AS%20?Genres)%20(GROUP_CONCAT(DISTINCT%20?Artists;%20SEPARATOR="||")%20AS%20?Artists)%20(GROUP_CONCAT(DISTINCT%20?Albums;%20SEPARATOR="||")%20AS%20?Albums)%20(GROUP_CONCAT(DISTINCT%20?ReleaseDates;%20SEPARATOR="||")%20AS%20?ReleaseDates)%20(GROUP_CONCAT(DISTINCT%20?Producers;%20SEPARATOR="||")%20AS%20?Producers)%20(GROUP_CONCAT(DISTINCT%20?RecordLabels;%20SEPARATOR="||")%20AS%20?RecordLabels)%20(GROUP_CONCAT(DISTINCT%20?Writers;%20SEPARATOR="||")%20AS%20?Writers)%20WHERE%20{%20?Track%20rdf:type%20dbo:Single.%20?Track%20rdfs:label%20?Name.%20?Track%20dbo:album%20?AlbumsLinks.%20?Track%20dbo:genre%20?GenresLinks.%20?Track%20dbo:musicalArtist%20?ArtistsLinks.%20?Track%20dbo:releaseDate%20?ReleaseDates.%20OPTIONAL%20{%20?Track%20dbo:abstract%20?Desc.%20FILTER(langMatches(lang(?Desc),%20"en")).%20}%20OPTIONAL%20{%20?Track%20dbo:producer%20?ProducersLink.%20?ProducersLink%20rdfs:label%20?Producers.%20FILTER(langMatches(lang(?Producers),%20"en")).%20}%20OPTIONAL%20{%20?Track%20dbo:recordLabel%20?LabelsLinks.%20?LabelsLinks%20rdfs:label%20?RecordLabels.%20FILTER(langMatches(lang(?RecordLabels),%20"en")).%20}%20OPTIONAL%20{%20?Track%20dbo:writer%20?WritersLinks.%20?WritersLinks%20rdfs:label%20?Writers.%20FILTER(langMatches(lang(?Writers),%20"en")).%20}%20?AlbumsLinks%20rdfs:label%20?Albums.%20?GenresLinks%20rdfs:label%20?Genres.%20?ArtistsLinks%20rdfs:label%20?Artists.%20FILTER(regex(?Name,%20".*SOS.*")).%20FILTER(langMatches(lang(?Name),%20"en")).%20FILTER(langMatches(lang(?Albums),%20"en")).%20FILTER(langMatches(lang(?Genres),%20"en")).%20FILTER(langMatches(lang(?Artists),%20"en")).%20}%20GROUP%20BY%20?Name%20?Desc\"', {
                 "method": "GET",
                 "headers": {
                     "Accept": "application/json"
                 }
-            }).then(response => response.json()).then(function (data) {
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .then(function (data) {
                 let tracks = data.results.bindings;
                 return tracks.map(function (track) {
-                    let content = document.createElement("div");
-                    let li = document.createElement('li'),
-                        span = document.createElement('span');
-                    span.innerHTML = `${
-                        track.Album.value
-                    } ${
-                        track.Artist.last
-                    }`;
-                    li.appendChild(span);
-                    content.appendChild(li);
+                    let table = document.getElementById("tracks");
+                    let row = table.insertRow(table.length);
+                    var cell1 = row.insertCell(0);
+                    var cell2 = row.insertCell(1);
+                    var cell3 = row.insertCell(2);
+                    var cell4 = row.insertCell(3);
+                    var cell5 = row.insertCell(4);
+                    var cell6 = row.insertCell(5);
+                    var cell7 = row.insertCell(6);
+                    var cell8 = row.insertCell(7);
+                    cell1.innerHTML = track.Name.value;
+                    cell2.innerHTML = track.Genres.value;
+                    cell3.innerHTML = track.Albums.value;
+                    cell4.innerHTML = track.Artists.value;
+                    cell5.innerHTML = track.ReleaseDates.value;
+                    cell6.innerHTML = track.Producers.value;
+                    cell7.innerHTML = track.RecordLabels.value;
+                    cell8.innerHTML = track.Writers.value;
                 })
             }).catch(err => {
                 console.log(err);
