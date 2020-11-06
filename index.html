@@ -1,17 +1,46 @@
 <!doctype html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
+    <head>
+        <meta charset="utf-8">
+        <title>Semantic Web</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
 
-  <title>Semantic Web</title>
-</head>
+    <body>
 
-<body>
-  <script>
-    fetch('http://dbpedia.org/sparql?query=select distinct ?Song ?Title ?Date ?Album ?Genre ?Artist where { ?Song rdf:type dbo:MusicalWork. ?Song dbp:title ?Title. ?Song dbo:album ?Album. ?Song dbo:musicalArtist ?Artist. ?Song dbo:genre ?Genre. FILTER(regex(?Title, ".*Needed Me*"))} LIMIT 100')
-        .then(response => response.json())
-        .then(data => console.log(data));
-  </script>
-</body>
+        <table style="width:100%">
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Artist</th>
+                <th>Release Date</th>
+                <th>Genre</th>
+            </tr>
+        </table>
+        <script>
+            fetch('http://dbpedia.org/sparql?query=select distinct ?Song ?Title ?Date ?Album ?Genre ?Artist where { ?Song rdf:type dbo:MusicalWork. ?Song dbp:title ?Title. ?Song dbo:album ?Album. ?Song dbo:musicalArtist ?Artist. ?Song dbo:genre ?Genre. FILTER(regex(?Title, ".*Needed Me*"))} LIMIT 100', {
+                "method": "GET",
+                "headers": {
+                    "Accept": "application/json"
+                }
+            }).then(response => response.json()).then(function (data) {
+                let tracks = data.results.bindings;
+                return tracks.map(function (track) {
+                    let content = document.createElement("div");
+                    let li = document.createElement('li'),
+                        span = document.createElement('span');
+                    span.innerHTML = `${
+                        track.Album.value
+                    } ${
+                        track.Artist.last
+                    }`;
+                    li.appendChild(span);
+                    content.appendChild(li);
+                })
+            }).catch(err => {
+                console.log(err);
+            });
+        </script>
+    </body>
 </html>
