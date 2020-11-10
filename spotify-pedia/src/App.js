@@ -1,7 +1,11 @@
 import './App.css';
-import TrackTable from './components/TrackTable'
-import React, { Component } from 'react';
-import SearchBar from './components/SearchBar';
+import React from "react";
+import { Component } from "react";
+import SongPage from "./pages/song.page";
+import songData from './song.data';
+import SearchBar from "./components/SearchBar"
+import TrackTable from "./components/TrackTable"
+
 
 class App extends Component {
   
@@ -23,9 +27,10 @@ class App extends Component {
       <div>
         <SearchBar updateKeyword={this.updateKeyword}/>
         <TrackTable keyword={this.state.keyword}/>
+        <SongPage song = { songData[1] }/>
       </div>
     );
-  } 
+  }
 }
 
 export default App;
