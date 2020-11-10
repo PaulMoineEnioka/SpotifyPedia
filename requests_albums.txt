@@ -1,0 +1,214 @@
+####### Divers #########
+
+Musique !
+
+Un truc capable lire les URI :
+- caractères spéciaux
+
+Sur la barre de recherche, quand on récupére le nom de l'album, on met des majuscules
+sur tous les mots.
+
+Compter les resultats :
+- Si 1 : recupérer le nom, faire l'affichage
+- Si + : tableau qui présente les différents artistes et albums
+
+########## Album et artiste à partir d'une partie du nom de l'album ##########
+
+SELECT ?Album ?AlbumName ?ArtistName 
+WHERE { 
+	?Album a schema:MusicAlbum ; 
+	foaf:name ?AlbumName ;
+	dbo:artist ?Artist.
+
+	?Artist foaf:name ?ArtistName.
+
+	FILTER(regex(?AlbumName, ".*Thriller.*")).
+	FILTER(langMatches(lang(?AlbumName), "en")).
+} 
+LIMIT 50
+
+############ A partir de l'album et de l'artiste : ###############################
+############ Liste des titres (dbp:title) + leur nombre ##########################
+
+SSELECT DISTINCT ?Title ?TitleName
+WHERE { 
+
+	?Album a schema:MusicAlbum; 
+	foaf:name ?AlbumName; 
+	dbo:artist ?Artist.
+		
+	?Artist foaf:name ?ArtistName.
+        
+         {
+                ?Album dbp:title ?Title.
+        	?Title rdfs:label ?TitleName.
+        	FILTER(langMatches(lang(?TitleName), "en")).
+    	 }
+         UNION
+         {
+                ?Album dbp:title ?TitleName.
+                FILTER(datatype(?TitleName) = rdf:langString).
+         }
+                	
+	FILTER(?AlbumName = "Thriller"@en).
+	FILTER(?ArtistName = "Michael Jackson"@en).
+              
+} 
+LIMIT 50
+
+SELECT count(?Title) as ?Number_of_titles 
+WHERE { 
+	
+	?Album a schema:MusicAlbum; 
+	foaf:name ?AlbumName; 
+	dbo:artist ?Artist;
+	dbp:title ?Title.
+	
+	?Artist foaf:name ?ArtistName.
+	
+	FILTER(?AlbumName = "Thriller"@en).
+	FILTER(?ArtistName = "Michael Jackson"@en).
+} 
+LIMIT 50
+
+
+################ Date de sortite dbo:releaseDate ##################
+
+SELECT ?Release_Date 
+WHERE { 
+	?Album a schema:MusicAlbum; 
+	foaf:name ?AlbumName; 
+	dbo:artist ?Artist;
+	dbo:releaseDate ?Release_Date.
+	
+	?Artist foaf:name ?ArtistName.
+	
+	FILTER(?AlbumName = "Thriller"@en).
+	FILTER(?ArtistName = "Michael Jackson"@en).
+} 
+LIMIT 50
+
+################# Description dbo:abstract ########################
+
+SELECT ?Description 
+WHERE { 
+
+	?Album a schema:MusicAlbum; 
+	foaf:name ?AlbumName; 
+	dbo:artist ?Artist;
+	dbo:abstract ?Description.
+	
+	?Artist foaf:name ?ArtistName.
+	
+	FILTER(?AlbumName = "Abbey Road"@en).
+	FILTER(?ArtistName = "The Beatles"@en).
+	FILTER(langMatches(lang(?Description), "en")).
+} 
+LIMIT 50
+
+################ Genres : dbo:genre ################################ 
+
+SELECT ?Genre ?Genre_name 
+WHERE { 
+
+	?Album a schema:MusicAlbum; 
+	foaf:name ?AlbumName; 
+	dbo:artist ?Artist;
+	dbo:genre ?Genre.
+	
+	?Artist foaf:name ?ArtistName.
+
+	?Genre foaf:name ?Genre_name.
+	
+	FILTER(?AlbumName = "Thriller"@en).
+	FILTER(?ArtistName = "Michael Jackson"@en).
+	FILTER(langMatches(lang(?Genre_name), "en")).
+} 
+LIMIT 50
+
+
+################### Prix : dbp:award ##############################
+
+SELECT ?Award
+WHERE { 
+
+	?Album a schema:MusicAlbum; 
+	foaf:name ?AlbumName; 
+	dbo:artist ?Artist;
+	dbp:award ?Award.
+	
+	?Artist foaf:name ?ArtistName.
+	
+	FILTER(?AlbumName = "Thriller"@en).
+	FILTER(?ArtistName = "Michael Jackson"@en).	
+} 
+LIMIT 50
+
+################# Regions : dbp:region #############################
+
+SELECT ?Region WHERE { 
+	?Album a schema:MusicAlbum; 
+	foaf:name ?AlbumName; 
+	dbo:artist ?Artist;
+	dbp:region ?Region.
+	
+	?Artist foaf:name ?ArtistName.
+	
+	FILTER(?AlbumName = "Abbey Road"@en).
+	FILTER(?ArtistName = "The Beatles"@en).
+} 
+LIMIT 50
+
+################### VERSION UNE REQUETE #################
+
+SELECT ?AlbumName ?ArtistName ?Description COUNT(DISTINCT ?TitleName) AS ?Number_of_titles
+	(GROUP_CONCAT(DISTINCT ?TitleName; SEPARATOR="||") AS ?Titles)
+	(GROUP_CONCAT(DISTINCT ?Genre_name; SEPARATOR="||") AS ?Genres)
+	(GROUP_CONCAT(DISTINCT ?Award; SEPARATOR="||") AS ?Awards)
+	(GROUP_CONCAT(DISTINCT ?Release_Date; SEPARATOR="||") AS ?Release_Dates)
+WHERE {	
+	?Album a schema:MusicAlbum;
+	foaf:name ?AlbumName;
+	dbo:artist ?Artist.
+	
+	
+        ?Artist foaf:name ?ArtistName.
+	
+	 OPTIONAL {
+	 {
+                ?Album dbp:title ?Title.
+        	?Title rdfs:label ?TitleName.
+        	FILTER(langMatches(lang(?TitleName), "en")).
+    	 }
+         UNION
+         {
+                ?Album dbp:title ?TitleName.
+                FILTER(datatype(?TitleName) = rdf:langString).
+         } }
+	
+	OPTIONAL {
+		?Album dbp:award ?Award.
+	}
+	
+	OPTIONAL {
+		?Album	dbo:releaseDate ?Release_Date.
+	}
+         
+        OPTIONAL {
+		?Album dbo:genre ?Genre.
+		?Genre rdfs:label ?Genre_name.
+		FILTER(langMatches(lang(?Genre_name), "en")).
+	}
+	
+	OPTIONAL {
+		?Album dbo:abstract ?Description.
+		FILTER(langMatches(lang(?Description), "en")).
+	}
+
+	FILTER(regex(?AlbumName, ".*Thriller.*")).
+	FILTER(langMatches(lang(?AlbumName), "en")).
+} 
+LIMIT 100
+
+
+
