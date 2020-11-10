@@ -42,6 +42,7 @@ class TrackTable extends Component {
     this.state = {
       tracks: [],
       fetchedData: false,
+      error: null
     };
   }
   componentDidMount = () => {
@@ -60,6 +61,10 @@ class TrackTable extends Component {
       base.setState({
         fetchedData: true,
         tracks: result.results.bindings
+      });
+    }).catch(err => {
+      base.setState({
+        error: err
       });
     });
   }
