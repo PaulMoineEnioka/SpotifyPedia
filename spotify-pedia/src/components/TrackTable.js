@@ -28,34 +28,37 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
 });
 
-export default function TrackTable() {
+export default function TrackTable(props) {
   const classes = useStyles();
+
+  this
+
+  componentDidMount = async () => {
+    
+  }
 
   return (
     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="customized table">
+      <Table className={classes.table} aria-label='customized table'>
         <TableHead>
           <TableRow>
             <StyledTableCell>Name</StyledTableCell>
-            <StyledTableCell align="right">Genres</StyledTableCell>
-            <StyledTableCell align="right">Albums</StyledTableCell>
-            <StyledTableCell align="right">Artists</StyledTableCell>
-            <StyledTableCell align="right">Release Dates</StyledTableCell>
-            <StyledTableCell align="right">Producers</StyledTableCell>
-            <StyledTableCell align="right">Writers</StyledTableCell>
-            <StyledTableCell align="right">Description</StyledTableCell>
+            <StyledTableCell align='right'>Genres</StyledTableCell>
+            <StyledTableCell align='right'>Albums</StyledTableCell>
+            <StyledTableCell align='right'>Artists</StyledTableCell>
+            <StyledTableCell align='right'>Release Dates</StyledTableCell>
+            <StyledTableCell align='right'>Producers</StyledTableCell>
+            <StyledTableCell align='right'>Writers</StyledTableCell>
+            <StyledTableCell align='right'>Description</StyledTableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          
-        </TableBody>
+        <TableBody>{props.chidlren}</TableBody>
       </Table>
     </TableContainer>
   );

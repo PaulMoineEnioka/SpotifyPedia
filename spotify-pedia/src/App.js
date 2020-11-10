@@ -1,8 +1,11 @@
 import './App.css';
-import TrackTable from './components/TrackTable'
+import songData from './song.data';
+import SongPage from "./pages/song.page";
 
 function App() {
-  return <TrackTable/>;
+  return (
+      <SongPage song={songData[1]}/>
+  );
 }
 
 export default App;
