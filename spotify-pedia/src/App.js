@@ -1,8 +1,11 @@
 import './App.css';
 import TrackTable from './components/TrackTable'
+import React, { Component } from 'react';
 
-function App() {
-  return <TrackTable/>;
+class App extends Component {
+  render() {
+    return <TrackTable/>;
+  } 
 }
 
 export default App;
