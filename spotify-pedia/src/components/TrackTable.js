@@ -48,6 +48,9 @@ export default function TrackTable() {
             <StyledTableCell align="right">Albums</StyledTableCell>
             <StyledTableCell align="right">Artists</StyledTableCell>
             <StyledTableCell align="right">Release Dates</StyledTableCell>
+            <StyledTableCell align="right">Producers</StyledTableCell>
+            <StyledTableCell align="right">Writers</StyledTableCell>
+            <StyledTableCell align="right">Description</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
