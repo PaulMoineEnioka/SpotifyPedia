@@ -1,12 +1,13 @@
 import './App.css';
-import TrackTable from './components/TrackTable'
-import AlbumTable from './components/AlbumTable'
-import React, { Component } from 'react';
 
-class App extends Component {
-  render() {
-    return <AlbumTable/>;
-  } 
+import SongPage from "./pages/song.page";
+import songData from './song.data';
+
+function App() {
+    return ( <
+        SongPage song = { songData[1] }
+        />
+    );
 }
 
 export default App;
