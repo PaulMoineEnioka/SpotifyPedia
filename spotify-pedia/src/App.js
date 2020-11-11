@@ -4,8 +4,8 @@ import SongPage from "./pages/song.page";
 import songData from './song.data';
 
 function App() {
-    return ( <
-        SongPage song = { songData[1] }
+    return (<
+            SongPage song={songData[1]}
         />
     );
 }
