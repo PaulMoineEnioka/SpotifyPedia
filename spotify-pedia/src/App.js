@@ -5,6 +5,7 @@ import SongPage from "./pages/song.page";
 import songData from './song.data';
 import SearchBar from "./components/SearchBar"
 import TrackTable from "./components/TrackTable"
+import AlbumTable from './components/AlbumTable';
 
 
 class App extends Component {
@@ -18,8 +19,6 @@ class App extends Component {
 
   updateKeyword = (value) => {
     this.setState({keyword: value});
-    console.log("Updated in app");
-    console.log(this.state.keyword);
   }
 
   render() {
