@@ -5,7 +5,6 @@ import React from "react";
 import SearchBar from "./components/SearchBar";
 import SongPage from "./pages/song.page";
 import TrackTable from "./components/TrackTable";
-import TrackTableSinger from "./components/TrackTableSinger";
 import songData from './song.data';
 
 class App extends Component {
@@ -17,23 +16,17 @@ class App extends Component {
         };
     }
 
-    updateKeyword = (value) => {
-        this.setState({ keyword: value });
-        console.log("Updated in app");
-        console.log(this.state.keyword);
-    }
+  updateKeyword = (value) => {
+    this.setState({keyword: value});
+  }
 
     render() {
-        return ( <
-            div >
-            <
-            SearchBar updateKeyword = { this.updateKeyword }
-            /> <
-            TrackTable keyword = { this.state.keyword }
-            /> <
-            SongPage song = { songData[1] }
-            /> <
-            /div>
+        return (
+            <div>
+                <SearchBar updateKeyword = { this.updateKeyword } />
+                <TrackTable keyword = { this.state.keyword } />
+                <SongPage song = { songData[1] }/>
+            </div>
         );
     }
 }
