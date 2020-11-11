@@ -3,8 +3,9 @@ import React from "react";
 import { Component } from "react";
 import SongPage from "./pages/song.page";
 import songData from './song.data';
-import SearchBar from "./components/SearchBar"
-import TrackTable from "./components/TrackTable"
+import SearchBar from "./components/SearchBar";
+import TrackTable from "./components/TrackTable";
+import TrackTableSinger from "./components/TrackTableSinger";
 
 
 class App extends Component {
