@@ -28,7 +28,7 @@ export default class SongPage extends React.Component {
         const trackData = this.formatTrackData();
 
         return (
-            <div className={"page-song"}>
+            <div className={"page"}>
                 <div className="panel">
                     <div className="titlebar">
                         <h1>{trackData.name}</h1>

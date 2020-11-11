@@ -1,5 +1,5 @@
 
-.page-song .panel {
+.page .panel {
     margin: 20px auto;
     width: calc(80% - 100px);
     background: white;
@@ -8,13 +8,13 @@
     padding: 50px;
 }
 
-.page-song .titlebar {
+.page .titlebar {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.page-song .panel .topbar {
+.page .panel .topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -22,51 +22,51 @@
 }
 
 
-.page-song .panel .topbar img {
+.page .panel .topbar img {
     width: 30%;
     flex-shrink: 0;
     border-radius: 50%;
     margin-left: 50px;
 }
 
-.page-song .main-infos {
+.page .main-infos {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     margin: 20px 0;
 }
 
-.page-song .additional-infos {
+.page .additional-infos {
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
 }
 
-.page-song .additional-infos > div {
+.page .additional-infos > div {
     width: 25%;
 }
 
-.page-song .additional-infos > div ul {
+.page .additional-infos > div ul {
     padding-left: 0;
     list-style: none;
 }
 
-.page-song .additional-infos > div strong {
+.page .additional-infos > div strong {
     padding-left: 0;
 }
 
-.page-song .additional-infos > div span {
+.page .additional-infos > div span {
     display: block;
     margin-top: 15px;
 }
 
-.page-song .bottombar {
+.page .bottombar {
     display: flex;
     flex-wrap: nowrap;
     margin: 20px 0;
 }
 
-.page-song .bottombar .video {
+.page .bottombar .video {
     width: 100%;
     flex-shrink: 100;
     display: flex;
