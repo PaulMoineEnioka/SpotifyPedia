@@ -7,7 +7,7 @@ import SearchBar from "./components/SearchBar"
 import TrackTable from "./components/TrackTable"
 import AlbumTable from './components/AlbumTable';
 import TrackTableSinger from "./components/TrackTableSinger";
-
+import GroupTable from "./components/GroupTable";
 
 class App extends Component {
   
@@ -23,19 +23,26 @@ class App extends Component {
   }
 
   render() {
-    return (
+    /*return (
       <div>
         <SearchBar updateKeyword={this.updateKeyword}/>
         <TrackTable keyword={this.state.keyword}/>
         <SongPage song = { songData[1] }/>
       </div>
-    );
+    );*/
     /*return (
       <div>
         <SearchBar updateKeyword={this.updateKeyword}/>
         <TrackTableSinger keyword={this.state.keyword}></TrackTableSinger>
       </div>
     );*/
+
+    return (
+      <div>
+        <SearchBar updateKeyword={this.updateKeyword}/>
+        <GroupTable keyword={this.state.keyword}></GroupTable>
+      </div>
+    );
   }
 }
 
