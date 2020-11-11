@@ -69,12 +69,12 @@ class TrackTable extends Component {
     });
   }
 
-  componentDidMount = () => {
-    this.fetchdata();
+  componentDidMount = (prevProps) => {
+      this.fetchdata(); 
   }
 
   componentDidUpdate = () => {
-    this.fetchdata();
+    if (this.props.keyword != prevProps.keyword) this.fetchdata();
   }
 
   render = () => {
