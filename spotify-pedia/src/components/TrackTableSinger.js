@@ -20,6 +20,13 @@ const StyledTableCell = withStyles((theme) => ({
     },
 }))(TableCell);
 
+
+function toTitleCase(str) { //cf : https://www.w3docs.com/snippets/javascript/how-to-convert-string-to-title-case-with-javascript.html
+    return str.toLowerCase().split(' ').map(function (word) {
+      return (word.charAt(0).toUpperCase() + word.slice(1));
+    }).join(' ');
+  }
+
 export default class TrackTable extends React.Component {
 
     constructor(props) {
@@ -30,7 +37,11 @@ export default class TrackTable extends React.Component {
     }
 
     fetchData = () => {
-        const queryString = "select ?Singer ?Name ?BirthName ?BirthDate ?Description ?Quote ?Gender str(?StartYear) as ?StartYearString GROUP_CONCAT(DISTINCT ?Homepage;SEPARATOR=\" | \") as ?Homepages GROUP_CONCAT(DISTINCT ?BirthPlace;SEPARATOR=\" | \") as ?BirthPlaces GROUP_CONCAT(DISTINCT ?Album;SEPARATOR=\" | \") as ?Albums where { ?Singer rdf:type dbo:MusicalArtist. ?Singer rdfs:label ?Name.  ?Singer dbo:activeYearsStartYear ?StartYear. OPTIONAL{ ?Singer dbo:birthName ?BirthName. }. OPTIONAL{ ?Singer dct:description ?Description. }. OPTIONAL { ?Singer dbp:quote ?Quote }. OPTIONAL { ?Singer foaf:gender ?Gender }. OPTIONAL { ?Singer foaf:homepage ?Homepage }. OPTIONAL{ ?Singer dbo:birthDate ?BirthDate. FILTER(regex(str(?BirthDate),\"(?!0000)[0-9]{4}-((0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-8])|(0[13-9]|1[0-2])-(29|30)|(0[13578]|1[02])-31)\")). }. OPTIONAL{ ?Singer dbo:birthPlace ?BirthPlace. ?BirthPlace rdf:type dbo:Location. }. OPTIONAL{ ?Singer ^dbo:artist ?Album. ?Album rdf:type dbo:Album. }. FILTER(regex(?Name, \".*" + this.props.keyword + ".*\") && langMatches(lang(?Name),\"EN\")). } LIMIT 100";
+        let keyword = "";
+        if(this.props.keyword) {
+            keyword = toTitleCase(this.props.keyword);
+        }
+        const queryString = "select ?Singer ?Name ?BirthName ?BirthDate ?Description ?Quote ?Gender str(?StartYear) as ?StartYearString GROUP_CONCAT(DISTINCT ?Homepage;SEPARATOR=\" | \") as ?Homepages GROUP_CONCAT(DISTINCT ?BirthPlace;SEPARATOR=\" | \") as ?BirthPlaces GROUP_CONCAT(DISTINCT ?Album;SEPARATOR=\" | \") as ?Albums where { ?Singer rdf:type dbo:MusicalArtist. ?Singer rdfs:label ?Name.  ?Singer dbo:activeYearsStartYear ?StartYear. OPTIONAL{ ?Singer dbo:birthName ?BirthName. }. OPTIONAL{ ?Singer dct:description ?Description. }. OPTIONAL { ?Singer dbp:quote ?Quote }. OPTIONAL { ?Singer foaf:gender ?Gender }. OPTIONAL { ?Singer foaf:homepage ?Homepage }. OPTIONAL{ ?Singer dbo:birthDate ?BirthDate. FILTER(regex(str(?BirthDate),\"(?!0000)[0-9]{4}-((0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-8])|(0[13-9]|1[0-2])-(29|30)|(0[13578]|1[02])-31)\")). }. OPTIONAL{ ?Singer dbo:birthPlace ?BirthPlace. ?BirthPlace rdf:type dbo:Location. }. OPTIONAL{ ?Singer ^dbo:artist ?Album. ?Album rdf:type dbo:Album. }. FILTER(regex(?Name, \".*" + keyword + ".*\") && langMatches(lang(?Name),\"EN\")). } LIMIT 100";
         const formData = new FormData();
         formData.append('query', queryString)
         fetch("http://dbpedia.org/sparql", {
@@ -50,12 +61,12 @@ export default class TrackTable extends React.Component {
             ); // parses JSON response into native JavaScript objects
     }
 
-    componentDidMount = async () => {
+    /*componentDidMount = async () => {
         this.fetchData();
-    }
+    }*/
 
-    componentDidUpdate = () => {
-        this.fetchData();
+    componentDidUpdate = (prevProps) => {
+        if (this.props.keyword !== prevProps.keyword) this.fetchData();
     }
 
     renderSinger(uniqueKey, i) {

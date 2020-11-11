@@ -1,5 +1,5 @@
 import React from "react";
-//import mediasUtil from '../utils/medias.util';
+import mediasUtil from '../utils/medias.util';
 import "../style/song.page.css";
 
 export default class SingerPage extends React.Component {
@@ -13,15 +13,21 @@ export default class SingerPage extends React.Component {
         }
     }
 
-    /*componentDidMount() {
-        this.fetchMedias();
-    }*/
+    fetchMedias = async () => {
+        console.log("ICI");
+        if(this.props.singer) {
+            const medias = await mediasUtil.getSingerMedias(this.props.singer.Name.value);
+            this.setState(
+                {
+                    medias: { picture: medias.picture,}
+                }
+            );
+        }
+    }
 
-    /*fetchMedias = async () => {
-        const trackData = this.formatTrackData();
-        const medias = await mediasUtil.getTrackMedias(trackData.artists[0], "SOS");
-        this.setState({medias: { picture: medias.picture, video: medias.video}});
-    }*/
+    componentDidUpdate = (prevProps) => {
+        if (this.props.singer !== prevProps.singer) this.fetchMedias();
+    }
 
     render = () => {
         //const trackData = this.formatTrackData();
@@ -29,6 +35,7 @@ export default class SingerPage extends React.Component {
             return(<div></div>);
         }
         const singer = this.props.singer;
+        //this.fetchMedias();
 
         if(!singer.Name) {
             singer.Name = {};
@@ -78,6 +85,7 @@ export default class SingerPage extends React.Component {
                             <strong>Description</strong>
                             <p>{singer.Description.value}</p>
                         </div>
+                        <img src={this.state.medias.picture} alt={""}/>
                     </div>
                     <div className="main-infos">
                         <div><strong>Albums : </strong> {singer.Albums.value}</div>
