@@ -1,6 +1,7 @@
 import './App.css';
 import React from "react";
 import { Component } from "react";
+import AlbumPage from "./pages/album.page";
 import SongPage from "./pages/song.page";
 import songData from './song.data';
 import SearchBar from "./components/SearchBar"
@@ -36,11 +37,17 @@ class App extends Component {
         <TrackTableSinger keyword={this.state.keyword}></TrackTableSinger>
       </div>
     );*/
-
+    /*
     return (
       <div>
         <SearchBar updateKeyword={this.updateKeyword}/>
         <GroupTable keyword={this.state.keyword}></GroupTable>
+      </div>
+    );
+    */
+    return(
+      <div>
+        <AlbumPage album = {['"Thriller"@en','"Michael Jackson"@en']}/>
       </div>
     );
   }
