@@ -1,5 +1,9 @@
+import { useEffect, useState } from "react";
+
+import { Component } from "react";
+import Paper from "@material-ui/core/Paper";
 import React from "react";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import SongPage from "../pages/song.page";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -15,21 +19,21 @@ import 'reactjs-popup/dist/index.css';
 import { Component } from "react";
 
 const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  body: {
-    fontSize: 14,
-  },
+    head: {
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white,
+    },
+    body: {
+        fontSize: 14,
+    },
 }))(TableCell);
 
 const StyledTableRow = withStyles((theme) => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
+    root: {
+        "&:nth-of-type(odd)": {
+            backgroundColor: theme.palette.action.hover,
+        },
     },
-  },
 }))(TableRow);
 
 class TrackTable extends Component {
@@ -45,10 +49,8 @@ class TrackTable extends Component {
 
   fetchdata = () => {
     const base = this;
-    console.log("base: ");
-    console.log(base);
     fetch(
-      `http://dbpedia.org/sparql?query=SELECT DISTINCT ?Name ?Desc
+        `http://dbpedia.org/sparql?query=SELECT DISTINCT ?Name ?Desc
     (GROUP_CONCAT(DISTINCT ?Artists; SEPARATOR="||") AS ?Artists)
 WHERE {
     ?Track rdf:type dbo:Single.
@@ -63,32 +65,33 @@ WHERE {
     FILTER(langMatches(lang(?Name), "en")).
     FILTER(langMatches(lang(?Artists), "en")).
     
-} GROUP BY ?Name ?Desc`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      }
+} GROUP BY ?Name ?Desc LIMIT 20`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        }
     )
-      .then((res) => res.json())
-      .then((result) => {
-        console.log(base);
-        console.log(result);
-        base.setState({
-          fetchedData: true,
-          tracks: result.results.bindings,
+        .then((res) => res.json())
+        .then((result) => {
+          base.setState({
+            fetchedData: true,
+            tracks: result.results.bindings,
+          });
+        })
+        .catch((err) => {
+          base.setState({
+            error: err,
+          });
         });
-      })
-      .catch((err) => {
-        base.setState({
-          error: err,
-        });
-      });
   };
 
+  componentDidMount() {
+    this.fetchdata();
+  }
+
   componentDidUpdate = (prevProps) => {
-    if (this.props.keyword != prevProps.keyword) this.fetchdata();
+    if (this.props.keyword !== prevProps.keyword) this.fetchdata();
   };
 
   handleRowClick = (name,artist) => {

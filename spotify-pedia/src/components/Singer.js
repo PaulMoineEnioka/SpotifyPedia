@@ -33,49 +33,9 @@ export default class Singer extends React.Component {
             this.props.singer.Name.value = "";
         }
 
-        if(!this.props.singer.BirthName) {
-            this.props.singer.BirthName = {};
-            this.props.singer.BirthName.value = "";
-        }
-
-        if(!this.props.singer.BirthDate) {
-            this.props.singer.BirthDate = {};
-            this.props.singer.BirthDate.value = "";
-        }
-
-        if(!this.props.singer.Description) {
-            this.props.singer.Description = {};
-            this.props.singer.Description.value = "";
-        }
-
-        if(!this.props.singer.Quote) {
-            this.props.singer.Quote = {};
-            this.props.singer.Quote.value = "";
-        }
-
-        if(!this.props.singer.Gender) {
-            this.props.singer.Gender = {};
-            this.props.singer.Gender.value = "";
-        }
-
-        if(!this.props.singer.Homepages) {
-            this.props.singer.Homepages = {};
-            this.props.singer.Homepages.value = "";
-        }
-
         return (
             <StyledTableRow key={this.props.index}>
                 <StyledTableCell>{this.props.singer.Name.value}</StyledTableCell>
-                <StyledTableCell>{this.props.singer.Singer.value}</StyledTableCell>
-                <StyledTableCell>{this.props.singer.BirthName.value}</StyledTableCell>
-                <StyledTableCell>{this.props.singer.BirthDate.value}</StyledTableCell>
-                <StyledTableCell>{this.props.singer.Description.value}</StyledTableCell>
-                <StyledTableCell>{this.props.singer.Quote.value}</StyledTableCell>
-                <StyledTableCell>{this.props.singer.Gender.value}</StyledTableCell>
-                <StyledTableCell>{this.props.singer.Homepages.value}</StyledTableCell>
-                <StyledTableCell>{this.props.singer.StartYearString.value}</StyledTableCell>
-                <StyledTableCell>{this.props.singer.BirthPlaces.value}</StyledTableCell>
-                <StyledTableCell>{this.props.singer.Albums.value}</StyledTableCell>
             </StyledTableRow>
         );
     }
