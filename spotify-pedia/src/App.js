@@ -47,7 +47,8 @@ class App extends Component {
 
       return(
           <div>
-              <SongPage songName={"SOS"} artists={"Rihanna"}/>
+              <SearchBar updateKeyword={this.updateKeyword}/>
+              <TrackTable keyword={this.state.keyword}/>
           </div>
       )
   }

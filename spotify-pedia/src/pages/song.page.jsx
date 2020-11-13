@@ -80,8 +80,9 @@ export default class SongPage extends React.Component {
         })).json();
         if (res.results.bindings.length) {
             this.setState({ song: res.results.bindings[0] });
+            this.fetchMedias();
         }
-        this.fetchMedias();
+        
     }
 
     fetchMedias = async () => {

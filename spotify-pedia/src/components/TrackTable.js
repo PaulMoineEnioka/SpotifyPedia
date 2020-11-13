@@ -6,10 +6,12 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import SongPage from "./pages/song.page";
-import Paper from "@material-ui/core/Paper";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import SongPage from "../pages/song.page";
+import { IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import 'reactjs-popup/dist/index.css';
 import { Component } from "react";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -30,12 +32,6 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 700,
-  },
-});
-
 class TrackTable extends Component {
   constructor(props) {
     super(props);
@@ -43,6 +39,7 @@ class TrackTable extends Component {
       tracks: [],
       fetchedData: false,
       error: null,
+      popupOpen: false
     };
   }
 
@@ -94,17 +91,30 @@ WHERE {
     if (this.props.keyword != prevProps.keyword) this.fetchdata();
   };
 
-  handleRowClick = () => {
-    this.render(<SongPage/>)
+  handleRowClick = (name,artist) => {
+    this.setState({
+      selectedName: name,
+      selectedArtsit: artist
+    })
   }
 
+  handleClose = () => {
+    this.setState({
+      selectedName: null,
+      selectedArtsit: null
+    })
+    console.log("Closed popup");
+  }
+  
   render = () => {
-    const { tracks, fetchedData } = this.state;
+    const { tracks, fetchedData, selectedName, selectedArtsit} = this.state;
+    const closeImg = {cursor:'pointer', float:'right', marginTop: '5px', width: '20px'};
     console.log("state:");
     console.log(this.state);
     console.log(this.props);
     console.log(tracks);
     return (
+      <>
       <TableContainer>
         <Table aria-label="customized table">
           <TableHead>
@@ -115,9 +125,9 @@ WHERE {
           </TableHead>
           <TableBody>
             {tracks.map((track) => (
-              <StyledTableRow key={track.Name.value + track.Artists.value} onClick = {this.handleRowClick()} >
+              <StyledTableRow key={track.Name.value + track.Artists.value} >
                 <StyledTableCell align="right">
-                  {track.Name.value}
+                  <a onClick= {() => this.handleRowClick(track.Name.value,track.Artists.value)}>{track.Name.value}</a>
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {track.Artists.value.split("||").map((p) => (
@@ -129,6 +139,15 @@ WHERE {
           </TableBody>
         </Table>
       </TableContainer>
+      <Dialog onClose={this.handleClose} open={selectedName && selectedArtsit} fullScreen={true}>
+        <DialogTitle id="simple-dialog-title">
+          <IconButton onClick={this.handleClose}>
+            <CloseIcon />
+        </IconButton>
+        </DialogTitle>
+          <SongPage songName={selectedName} artists={selectedArtsit}/>
+        </Dialog>
+      </>
     );
   };
 }
