@@ -30,6 +30,29 @@ const getTrackMedias = async(artistName, trackName) => {
     };
 };
 
+const getSingerMedias = async(singerName) => {
+    try {
+        const res = await fetch(
+            `https://theaudiodb.com/api/v1/json/1/search.php?s=${singerName}`
+        );
+        const jsonResponse = await res.json();
+        if (jsonResponse && jsonResponse.artists && jsonResponse.artists.length) {
+            const singer = jsonResponse.artists[0];
+            console.log(singer);
+            const singerPicture = singer.strArtistThumb;
+            return {
+                picture: singerPicture,
+            };
+        }
+    } catch (error) {
+        console.error(error);
+    }
+    return {
+        picture: '',
+    };
+};
+
 export default {
     getTrackMedias,
+    getSingerMedias,
 }

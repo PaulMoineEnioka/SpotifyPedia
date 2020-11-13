@@ -13,7 +13,7 @@ class SearchBar extends Component {
   }
 
   updateKeyword = () => {
-    this.props.updateKeyword(this.state.keyword);
+    this.props.updateKeyword(this.state.keyword.toLowerCase());
   }
 
   render = () => {
