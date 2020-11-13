@@ -6,6 +6,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import SongPage from "./pages/song.page";
 import Paper from "@material-ui/core/Paper";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -93,6 +94,10 @@ WHERE {
     if (this.props.keyword != prevProps.keyword) this.fetchdata();
   };
 
+  handleRowClick = () => {
+    this.render(<SongPage/>)
+  }
+
   render = () => {
     const { tracks, fetchedData } = this.state;
     console.log("state:");
@@ -110,7 +115,7 @@ WHERE {
           </TableHead>
           <TableBody>
             {tracks.map((track) => (
-              <StyledTableRow key={track.Name.value + track.Artists.value}>
+              <StyledTableRow key={track.Name.value + track.Artists.value} onClick = {this.handleRowClick()} >
                 <StyledTableCell align="right">
                   {track.Name.value}
                 </StyledTableCell>
