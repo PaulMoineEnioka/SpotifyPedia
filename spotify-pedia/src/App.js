@@ -41,7 +41,7 @@ class App extends Component {
     return (
       <div>
         <SearchBar updateKeyword={this.updateKeyword}/>
-        <GroupTable keyword={this.state.keyword}></GroupTable>
+        <TrackTable keyword={this.state.keyword}/>
       </div>
     );
   }
