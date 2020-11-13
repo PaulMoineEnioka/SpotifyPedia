@@ -11,7 +11,6 @@ import TrackTableSinger from "./components/TrackTableSinger";
 import GroupTable from "./components/GroupTable";
 
 class App extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
