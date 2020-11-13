@@ -6,6 +6,9 @@ import SearchBar from "./components/SearchBar";
 import SongPage from "./pages/song.page";
 import TrackTable from "./components/TrackTable";
 import songData from './song.data';
+import AlbumTable from './components/AlbumTable';
+import TrackTableSinger from "./components/TrackTableSinger";
+
 
 class App extends Component {
 
