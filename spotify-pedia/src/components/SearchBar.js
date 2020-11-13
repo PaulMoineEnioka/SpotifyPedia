@@ -22,8 +22,8 @@ class SearchBar extends Component {
 
     onChangeSearch = (event) => {
         this.state.keyword = event.target.value;
-        this.updateKeyword()
         this.setState({ keyword: event.target.value });
+        this.updateKeyword()
     }
 
     render = () => {
