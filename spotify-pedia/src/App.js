@@ -38,12 +38,18 @@ class App extends Component {
       </div>
     );*/
 
-    return (
+    /*return (
       <div>
         <SearchBar updateKeyword={this.updateKeyword}/>
         <GroupTable keyword={this.state.keyword}></GroupTable>
       </div>
-    );
+    );*/
+
+      return(
+          <div>
+              <SongPage songName={"SOS"} artists={"Rihanna"}/>
+          </div>
+      )
   }
 }
 
