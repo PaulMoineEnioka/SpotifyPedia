@@ -20,10 +20,18 @@ class SearchBar extends Component {
         this.setState({ type: event.target.value });
     }
 
-    onChangeSearch = (event) => {
+    onChangeSearch = async (event) => {
         this.state.keyword = event.target.value;
         this.setState({ keyword: event.target.value });
-        this.updateKeyword()
+        this.AutoUpload();
+    }
+
+    AutoUpload = async () => {
+        var sts = this.state.keyword;
+        await new Promise(r => setTimeout(r, 100)); 
+        if(sts === this.state.keyword){
+            this.updateKeyword();
+        }
     }
 
     render = () => {

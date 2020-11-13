@@ -49,8 +49,10 @@ export default class SingerPage extends React.Component {
     componentDidUpdate = (prevProps) => {
         if (this.props.singer !== prevProps.singer) 
         {
-            this.fetchData();
-            this.fetchMedias();
+            if(this.props.singer !== undefined){
+                this.fetchData();
+                this.fetchMedias();
+            }
         }
     }
 
