@@ -1,14 +1,11 @@
 import React from "react";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import { useState, useEffect } from "react";
-import axios from "axios";
 import { Component } from "react";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -29,12 +26,6 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 700,
-  },
-});
-
 class TrackTable extends Component {
   constructor(props) {
     super(props);
@@ -47,8 +38,6 @@ class TrackTable extends Component {
 
   fetchdata = () => {
     const base = this;
-    console.log("base: ");
-    console.log(base);
     fetch(
       `http://dbpedia.org/sparql?query=SELECT DISTINCT ?Name ?Desc
     (GROUP_CONCAT(DISTINCT ?Artists; SEPARATOR="||") AS ?Artists)
@@ -65,7 +54,7 @@ WHERE {
     FILTER(langMatches(lang(?Name), "en")).
     FILTER(langMatches(lang(?Artists), "en")).
     
-} GROUP BY ?Name ?Desc`,
+} GROUP BY ?Name ?Desc LIMIT 20`,
       {
         method: "GET",
         headers: {
@@ -75,8 +64,6 @@ WHERE {
     )
       .then((res) => res.json())
       .then((result) => {
-        console.log(base);
-        console.log(result);
         base.setState({
           fetchedData: true,
           tracks: result.results.bindings,
@@ -89,16 +76,16 @@ WHERE {
       });
   };
 
+  componentDidMount() {
+    this.fetchdata();
+  }
+
   componentDidUpdate = (prevProps) => {
-    if (this.props.keyword != prevProps.keyword) this.fetchdata();
+    if (this.props.keyword !== prevProps.keyword) this.fetchdata();
   };
 
   render = () => {
-    const { tracks, fetchedData } = this.state;
-    console.log("state:");
-    console.log(this.state);
-    console.log(this.props);
-    console.log(tracks);
+    const { tracks } = this.state;
     return (
       <TableContainer>
         <Table aria-label="customized table">
