@@ -30,19 +30,20 @@ class App extends Component {
         <SongPage song = { songData[1] }/>
       </div>
     );*/
-    /*return (
+    
+    return (
       <div>
         <SearchBar updateKeyword={this.updateKeyword}/>
         <TrackTableSinger keyword={this.state.keyword}></TrackTableSinger>
       </div>
-    );*/
+    );
 
-    return (
+    /*return (
       <div>
         <SearchBar updateKeyword={this.updateKeyword}/>
         <GroupTable keyword={this.state.keyword}></GroupTable>
       </div>
-    );
+    );*/
   }
 }
 
