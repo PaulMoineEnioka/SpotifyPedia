@@ -95,15 +95,29 @@ class TrackTable extends Component {
           </TableHead>
           <TableBody>
           {tracks.map((track) => (
-            <StyledTableRow key={track.name}>
+            <StyledTableRow key={track.Name.value}>
               <StyledTableCell align="right">{track.Name.value}</StyledTableCell>
-              <StyledTableCell align="right">{track.Genres.value}</StyledTableCell>
-              <StyledTableCell align="right">{track.Albums.value}</StyledTableCell>
-              <StyledTableCell align="right">{track.Artists.value}</StyledTableCell>
-              <StyledTableCell align="right">{track.ReleaseDates.value}</StyledTableCell>
-              <StyledTableCell align="right">{track.Producers.value}</StyledTableCell>
-              <StyledTableCell align="right">{track.RecordLabels.value}</StyledTableCell>
-              <StyledTableCell align="right">{track.Writers.value}</StyledTableCell>
+              <StyledTableCell align="right">{track.Genres.value.split('||').map(p => (
+                                            <li key={p}>{p}</li>
+                                        ))}</StyledTableCell>
+              <StyledTableCell align="right">{track.Albums.value.split('||').map(p => (
+                                            <li key={p}>{p}</li>
+                                        ))}</StyledTableCell>
+              <StyledTableCell align="right">{track.Artists.value.split('||').map(p => (
+                                            <li key={p}>{p}</li>
+                                        ))}</StyledTableCell>
+              <StyledTableCell align="right">{track.ReleaseDates.value.split('||').map(p => (
+                                            <li key={p}>{p}</li>
+                                        ))}</StyledTableCell>
+              <StyledTableCell align="right">{track.Producers.value.split('||').map(p => (
+                                            <li key={p}>{p}</li>
+                                        ))}</StyledTableCell>
+              <StyledTableCell align="right">{track.RecordLabels.value.split('||').map(p => (
+                                            <li key={p}>{p}</li>
+                                        ))}</StyledTableCell>
+              <StyledTableCell align="right">{track.Writers.value.split('||').map(p => (
+                                            <li key={p}>{p}</li>
+                                        ))}</StyledTableCell>
             </StyledTableRow>
           ))}
           </TableBody>
