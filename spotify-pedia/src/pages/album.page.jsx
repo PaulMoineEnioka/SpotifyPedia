@@ -9,8 +9,8 @@ export default class AlbumPage extends React.Component {
         super(props);
         this.state = {
             albums: [],
-            albumName : props.album[0],
-            albumArtist : props.album[1]
+            albumName : props.albumName,
+            albumArtist : props.artistName
         };
    }
 
@@ -59,7 +59,8 @@ export default class AlbumPage extends React.Component {
     
     renderDesc() {
         if (this.state.albums.length > 0) {
-            return (
+            if('Description' in this.state.albums[0]) {
+                return (
                     
                     <div className="topbar">
                         <div>
@@ -67,7 +68,19 @@ export default class AlbumPage extends React.Component {
                             <p>{this.state.albums[0].Description.value}</p>
                         </div>            
                     </div>             
-        );
+                );
+            } else {
+                return (
+                    
+                    <div className="topbar">
+                        <div>
+                            <strong>Description</strong>
+                            <p>unknown</p>
+                        </div>            
+                    </div>             
+                );
+            }
+            
         } else {
             return ("...");
         }
@@ -95,7 +108,7 @@ export default class AlbumPage extends React.Component {
                     <div className="main-infos">
                             {genres[0].length ? 
                                 <div>
-                                <strong>Genres:</strong>
+                                <strong>Genre(s):</strong>
                                 {
                                     genres.length ?
                                         <ul>

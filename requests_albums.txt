@@ -183,7 +183,7 @@ WHERE {
          UNION
          {
                 ?Album dbp:title ?TitleName.
-                FILTER(datatype(?TitleName) = rdf:langString).
+                FILTER(daGtatype(?TitleName) = rdf:langString).
          } }
 	
 	OPTIONAL {

@@ -41,18 +41,18 @@ class App extends Component {
         );*/
 
 
-        /*return (
+        return (
             <div>
                 <SearchBar updateKeyword={this.updateKeyword}/>
                 {this.renderTable()}
             </div>
-        );*/
-
-        return(
-          <div>
-            <AlbumPage album = {['"Thriller"@en','"Michael Jackson"@en']}/>
-          </div>
         );
+
+        /*return(
+          <div>
+            <AlbumPage albumName = '"Thriller"@en' artistName = '"Michael Jackson"@en'/>
+          </div>
+        );*/
     }
 
     renderTable = () => {
@@ -60,7 +60,7 @@ class App extends Component {
             case 'artist':
                 return null;
             case 'album':
-                return null;
+                return <AlbumTable keyword={this.state.keyword}/>
             case 'track':
                 return <TrackTable keyword={this.state.keyword}/>
             default:
