@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import React from "react";
@@ -12,11 +12,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import SongPage from "../pages/song.page";
 import { IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import 'reactjs-popup/dist/index.css';
-import { Component } from "react";
 
 const StyledTableCell = withStyles((theme) => ({
     head: {

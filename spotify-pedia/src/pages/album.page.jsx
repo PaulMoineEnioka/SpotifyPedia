@@ -15,7 +15,19 @@ export default class AlbumPage extends React.Component {
    }
 
    fetchData = () => {
-    const queryString = 'SELECT ?AlbumName ?ArtistName ?Description COUNT(DISTINCT ?TitleName) AS ?Number_of_titles	(GROUP_CONCAT(DISTINCT ?TitleName; SEPARATOR="||") AS ?Titles)	(GROUP_CONCAT(DISTINCT ?Genre_name; SEPARATOR="||") AS ?Genres)	(GROUP_CONCAT(DISTINCT ?Award; SEPARATOR="||") AS ?Awards)	(GROUP_CONCAT(DISTINCT ?Release_Date; SEPARATOR="||") AS ?Release_Dates) WHERE { ?Album a schema:MusicAlbum; foaf:name ?AlbumName;	dbo:artist ?Artist. ?Artist foaf:name ?ArtistName. OPTIONAL { { ?Album dbp:title ?Title. ?Title rdfs:label ?TitleName. FILTER(langMatches(lang(?TitleName), "en")). } UNION { ?Album dbp:title ?TitleName. FILTER(datatype(?TitleName) = rdf:langString).} }OPTIONAL {?Album dbp:award ?Award.}	OPTIONAL {?Album dbo:releaseDate ?Release_Date.	} OPTIONAL { ?Album dbo:genre ?Genre. ?Genre rdfs:label ?Genre_name.	FILTER(langMatches(lang(?Genre_name), "en")).	}	OPTIONAL {	?Album dbo:abstract ?Description. FILTER(langMatches(lang(?Description), "en")). } FILTER(?AlbumName = '+ this.state.albumName + '). FILTER(?ArtistName = ' + this.state.albumArtist + ').}';
+    const queryString = `SELECT ?AlbumName ?ArtistName ?Description COUNT(DISTINCT ?TitleName) AS ?Number_of_titles	
+    (GROUP_CONCAT(DISTINCT ?TitleName; SEPARATOR="||") AS ?Titles)	
+    (GROUP_CONCAT(DISTINCT ?Genre_name; SEPARATOR="||") AS ?Genres)	
+    (GROUP_CONCAT(DISTINCT ?Award; SEPARATOR="||") AS ?Awards)	
+    (GROUP_CONCAT(DISTINCT ?Release_Date; SEPARATOR="||") AS ?Release_Dates) WHERE { 
+        ?Album a schema:MusicAlbum; foaf:name ?AlbumName;	
+        dbo:artist ?Artist. ?Artist foaf:name ?ArtistName. 
+        OPTIONAL { { ?Album dbp:title ?Title. ?Title rdfs:label ?TitleName. FILTER(langMatches(lang(?TitleName), "en")). } 
+        UNION { ?Album dbp:title ?TitleName. FILTER(datatype(?TitleName) = rdf:langString).} }
+        OPTIONAL {?Album dbp:award ?Award.}	OPTIONAL {?Album dbo:releaseDate ?Release_Date.	} 
+        OPTIONAL { ?Album dbo:genre ?Genre. ?Genre rdfs:label ?Genre_name.	FILTER(langMatches(lang(?Genre_name), "en")).	}	
+        OPTIONAL {	?Album dbo:abstract ?Description. FILTER(langMatches(lang(?Description), "en")). } FILTER(?AlbumName = `+ this.state.albumName + `). 
+        FILTER(?ArtistName = ` + this.state.albumArtist + `).}`;
     
     console.log("request="+queryString);
    
@@ -66,100 +78,107 @@ export default class AlbumPage extends React.Component {
             return (
                 <div className="titlebar">
                     <h1>{this.state.albums[0].AlbumName.value}</h1>
-                    <h2>{this.state.albums[0].ArtistName.value}</h2>
+                    <h2>By {this.state.albums[0].ArtistName.value}</h2>
                 </div>            
             );
-        } else {
-            return ("...");
-        }
+        } 
     }
 
     renderMainInfos() {
         if (this.state.albums.length > 0) {
             const genres = this.state.albums[0].Genres.value.split('||');
+            console.log(genres);
             const releaseDates = this.state.albums[0].Release_Dates.value.split('||');
-            return (
-                <div className="main-infos">
-                        <div>
-                            <strong>Genres:</strong>
-                            {
-                                genres.length ?
-                                    <ul>
-                                        {genres.map(p => (
-                                            <li key={p}>{p}</li>
-                                        ))}
-                                    </ul> : <span>Unknown</span>
+            console.log(releaseDates);
+            if(genres[0].length || releaseDates[0].length) {
+                return (
+                    <div className="main-infos">
+                            {genres[0].length ? 
+                                <div>
+                                <strong>Genres:</strong>
+                                {
+                                    genres.length ?
+                                        <ul>
+                                            {genres.map(p => (
+                                                <li key={p}>{p}</li>
+                                            ))}
+                                        </ul> : <span>Unknown</span>
+                                }
+                                </div> : <div></div>
                             }
-                        </div>
-                        <div>
-                            <strong>Release date(s):</strong> 
                             {
-                                
-                                releaseDates.length ?
-                                    <ul>
-                                        {releaseDates.map(p => (
-                                            <li key={p}>{p}</li>
-                                        ))}
-                                    </ul> : <span>Unknown</span>
-                                
+                                releaseDates[0].length ?
+                                <div>
+                                <strong>Release date(s):</strong> 
+                                {
+                                    
+                                    releaseDates.length ?
+                                        <ul>
+                                            {releaseDates.map(p => (
+                                                <li key={p}>{p}</li>
+                                            ))}
+                                        </ul> : <span>Unknown</span>
+                                    
+                                }
+                                </div> : <div></div>
                             }
-                        </div>
-                </div>         
-            );
-        } else {
-            return ("...");
-        }
+                            
+                    </div>         
+                );
+            } 
+            
+        } 
     }
     
 
     renderTitles() {
         if (this.state.albums.length > 0) {
             const titles = this.state.albums[0].Titles.value.split('||');
-
-            return (
-                <div className="additional-infos">
-                    <div>
-                        <strong>Titles ({titles.length ? titles.length : <span>Unknown</span>}):</strong>
-                        {
-                            titles.length ?
-                                <ul>
-                                    {titles.map(p => (
-                                        <li key={p}>{p}</li>
-                                    ))}
-                                </ul> : <span>Unknown</span>
-                        }
-                     
-                    </div>
-                </div>  
-            );
-        } else {
-            return ("...");
-        }
+            if(titles[0].length) {
+                return (
+                    <div className="additional-infos">
+                        <div>
+                            <strong>Titles ({titles.length ? titles.length : <span>Unknown</span>}):</strong>
+                            {
+                                titles.length ?
+                                    <ul>
+                                        {titles.map(p => (
+                                            <li key={p}>{p}</li>
+                                        ))}
+                                    </ul> : <span>Unknown</span>
+                            }
+                         
+                        </div>
+                    </div>  
+                );
+            }
+            
+        } 
     }
 
     renderAwards() {
         if (this.state.albums.length > 0) {
             const awards = this.state.albums[0].Awards.value.split('||');
-
-            return (
-                <div className="additional-infos">
-                    <div>
-                        <strong>Awards:</strong>
-                        {
-                            awards.length ?
-                                <ul>
-                                    {awards.map(p => (
-                                        <li key={p}>{p}</li>
-                                    ))}
-                                </ul> : <span>Unknown</span>
-                        }
-                     
-                    </div>
-                </div>  
-            );
-        } else {
-            return ("...");
-        }
+            if(awards[0].length) {
+                return (
+                    <div className="additional-infos">
+                        <div>
+                            <strong>Awards:</strong>
+                            {
+                                awards.length ?
+                                    <ul>
+                                        {awards.map(p => (
+                                            <li key={p}>{p}</li>
+                                        ))}
+                                    </ul> : <span>Unknown</span>
+                            }
+                         
+                        </div>
+                    </div>  
+                );
+            }
+            
+        } 
     }
 
     render = () => {

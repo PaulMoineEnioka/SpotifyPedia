@@ -25,6 +25,7 @@ class App extends Component {
     }
 
     render() {
+
         /*return (
           <div>
             <SearchBar updateKeyword={this.updateKeyword}/>
@@ -40,18 +41,18 @@ class App extends Component {
         );*/
 
 
-        return (
+        /*return (
             <div>
                 <SearchBar updateKeyword={this.updateKeyword}/>
                 {this.renderTable()}
             </div>
-        );
+        );*/
 
-        /*return(
+        return(
           <div>
             <AlbumPage album = {['"Thriller"@en','"Michael Jackson"@en']}/>
           </div>
-        );*/
+        );
     }
 
     renderTable = () => {
