@@ -98,6 +98,7 @@ WHERE {
     console.log("state:");
     console.log(this.state);
     console.log(this.props);
+    console.log(tracks);
     return (
       <TableContainer>
         <Table aria-label="customized table">
@@ -109,7 +110,7 @@ WHERE {
           </TableHead>
           <TableBody>
             {tracks.map((track) => (
-              <StyledTableRow key={track.Name.value}>
+              <StyledTableRow key={track.Name.value + track.Artists.value}>
                 <StyledTableCell align="right">
                   {track.Name.value}
                 </StyledTableCell>
