@@ -7,7 +7,6 @@ const getTrackMedias = async(artistName, trackName) => {
         const jsonResponse = await res.json();
         if (jsonResponse && jsonResponse.track && jsonResponse.track.length) {
             const track = jsonResponse.track[0];
-            console.log(track);
             const trackPicture = track.strTrackThumb;
             const trackVideo = track.strMusicVid;
             let trackVideoId;
@@ -39,7 +38,6 @@ const getSingerMedias = async(singerName) => {
         const jsonResponse = await res.json();
         if (jsonResponse && jsonResponse.artists && jsonResponse.artists.length) {
             const singer = jsonResponse.artists[0];
-            console.log(singer);
             const singerPicture = singer.strArtistThumb;
             return {
                 picture: singerPicture,

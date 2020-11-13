@@ -15,7 +15,74 @@ export default class SongPage extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchMedias();
+        this.fetchData();
+    }
+
+    fetchData = async () => {
+        const request = `
+            SELECT DISTINCT ?Name ?Desc ?Artists
+                (GROUP_CONCAT(DISTINCT ?Genres; SEPARATOR="||") AS ?Genres)  
+                (GROUP_CONCAT(DISTINCT ?Albums; SEPARATOR="||") AS ?Albums) 
+                (GROUP_CONCAT(DISTINCT ?ReleaseDates; SEPARATOR="||") AS ?ReleaseDates) 
+                (GROUP_CONCAT(DISTINCT ?Producers; SEPARATOR="||") AS ?Producers) 
+                (GROUP_CONCAT(DISTINCT ?RecordLabels; SEPARATOR="||") AS ?RecordLabels) 
+                (GROUP_CONCAT(DISTINCT ?Writers; SEPARATOR="||") AS ?Writers) 
+            WHERE { 
+                {
+                    SELECT DISTINCT ?Track ?Name (GROUP_CONCAT(DISTINCT ?Artists; SEPARATOR="||") AS ?Artists) WHERE {
+                        ?Track rdf:type dbo:Single.
+                        ?Track foaf:name ?Name.
+                        ?Track dbo:musicalArtist ?ArtistsLinks. 
+                        ?ArtistsLinks rdfs:label ?Artists. 
+                        
+                        FILTER(langMatches(lang(?Artists), "en")). 
+                        FILTER(lcase(str(?Name)) = "${this.props.songName.toLowerCase()}").
+                        FILTER(langMatches(lang(?Name), "en")). 
+                    } GROUP BY ?Name ?Track
+                }
+            
+                ?Track dbo:album ?AlbumsLinks. 
+                ?Track dbo:genre ?GenresLinks. 
+                ?Track dbo:releaseDate ?ReleaseDates. 
+                OPTIONAL { 
+                    ?Track dbo:abstract ?Desc. 
+                    FILTER(langMatches(lang(?Desc), "en")). 
+                } 
+                OPTIONAL { 
+                    ?Track dbo:producer ?ProducersLink. 
+                    ?ProducersLink rdfs:label ?Producers. 
+                    FILTER(langMatches(lang(?Producers), "en")). 
+                } 
+                OPTIONAL { 
+                    ?Track dbo:recordLabel ?LabelsLinks. 
+                    ?LabelsLinks rdfs:label ?RecordLabels. 
+                    FILTER(langMatches(lang(?RecordLabels), "en")). 
+                } 
+                OPTIONAL { 
+                    ?Track dbo:writer ?WritersLinks. 
+                    ?WritersLinks rdfs:label ?Writers. 
+                    FILTER(langMatches(lang(?Writers), "en")). 
+                }
+                ?AlbumsLinks rdfs:label ?Albums. 
+                ?GenresLinks rdfs:label ?Genres. 
+                FILTER(langMatches(lang(?Albums), "en")). 
+                FILTER(langMatches(lang(?Genres), "en")).
+                FILTER(regex(lcase(str(?Artists)), ".*${this.props.artists.toLowerCase()}.*")). 
+            } GROUP BY ?Name ?Desc ?Artists`;
+        const formData = new FormData();
+        formData.append('query', request);
+        const res = await(await fetch(`http://dbpedia.org/sparql`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            },
+            body: formData
+        })).json();
+        if (res.results.bindings.length) {
+            this.setState({ song: res.results.bindings[0] });
+            this.fetchMedias();
+        }
+        
     }
 
     fetchMedias = async () => {
@@ -25,6 +92,7 @@ export default class SongPage extends React.Component {
     }
 
     render = () => {
+        if (!this.state.song) return null;
         const trackData = this.formatTrackData();
 
         return (
@@ -111,7 +179,7 @@ export default class SongPage extends React.Component {
     };
 
     formatTrackData = () => {
-        const { Name, Desc, Genres, Artists, Albums, ReleaseDates, Producers, RecordLabels, Writers} = this.props.song;
+        const { Name, Desc, Genres, Artists, Albums, ReleaseDates, Producers, RecordLabels, Writers} = this.state.song;
         return {
             name: Name.value,
             desc: Desc.value,
