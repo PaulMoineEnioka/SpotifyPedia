@@ -6,9 +6,8 @@ import React from "react";
 import SearchBar from "./components/SearchBar";
 import SongPage from "./pages/song.page";
 import TrackTable from "./components/TrackTable";
-import songData from './song.data';
 import AlbumTable from './components/AlbumTable';
-import TrackTableSinger from "./components/TrackTableSinger";
+import SingerTable from "./components/SingerTable";
 import GroupTable from "./components/GroupTable";
 
 class App extends Component {
@@ -58,7 +57,7 @@ class App extends Component {
     renderTable = () => {
         switch (this.state.type) {
             case 'artist':
-                return null;
+                return <SingerTable keyword={this.state.keyword}></SingerTable>;
             case 'album':
                 return <AlbumTable keyword={this.state.keyword}/>
             case 'track':
