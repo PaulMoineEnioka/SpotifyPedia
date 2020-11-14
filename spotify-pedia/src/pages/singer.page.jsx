@@ -9,6 +9,8 @@ export default class SingerPage extends React.Component {
         this.state = {
             medias: {
                 picture: '',
+                topSongs: '',
+                biography: '',
             },
             singer: {},
         }
@@ -40,7 +42,12 @@ export default class SingerPage extends React.Component {
             const medias = await mediasUtil.getSingerMedias(this.props.singer.Name.value);
             this.setState(
                 {
-                    medias: { picture: medias.picture,}
+                    medias: 
+                    { 
+                        picture: medias.picture,
+                        topSongs: medias.topSongs,
+                        biography: medias.biography,
+                    }
                 }
             );
         }
@@ -84,6 +91,21 @@ export default class SingerPage extends React.Component {
         return homepages.map((val) => {
             return (<a key={val} href={val} rel="noreferrer" target="_blank">{val}</a>);
         });
+    }
+
+    affichageTopSongs() {
+        if(!this.state.medias.topSongs || this.state.medias.topSongs === "") return <br/>;
+        console.log(this.state.medias.topSongs);
+        return (
+            <span>
+                <div>
+                    <br/>
+                    <strong>Consult artist's top songs here : </strong>
+                    <a href={this.state.medias.topSongs} rel="noreferrer" target="_blank">top songs</a>
+                </div>
+                <br/>
+            </span>
+        );
     }
 
     render = () => {
@@ -155,13 +177,13 @@ export default class SingerPage extends React.Component {
                             <strong>Description</strong>
                             <p>{singer.Description.value !== "" ? singer.Description.value: "No description"}</p>
                         </div>
-                        <img src={this.state.medias.picture} alt={""}/>
                     </div>
                     <div className="main-infos">
                         <div><strong>Albums : </strong> 
                         <br/>
                         {this.affichageAlbum(singer)}
                         </div>
+                        <img className="imgSinger" src={this.state.medias.picture} alt={""}/>
                     </div>
                     <div>
                         <strong>Gender : </strong>
@@ -203,6 +225,13 @@ export default class SingerPage extends React.Component {
                         <strong>Homepages : </strong>
                         {
                             this.affichageHomepages(singer)
+                        }
+                    </div>
+                    {this.affichageTopSongs()}
+                    <div>
+                        <strong>Biography : </strong>
+                        {
+                            this.state.medias.biography
                         }
                     </div>
                 </div>
