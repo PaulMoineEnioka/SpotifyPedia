@@ -81,3 +81,8 @@
     flex-shrink: 100;
     display: flex;
 }
+
+table td button {
+    border: none;
+    background: none;
+}
