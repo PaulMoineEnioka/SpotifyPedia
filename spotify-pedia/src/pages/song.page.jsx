@@ -22,6 +22,7 @@ export default class SongPage extends React.Component {
     }
 
     fetchData = async () => {
+        console.log(this.props);
         const request = `
             SELECT DISTINCT ?Name ?Desc ?Artists
                 (GROUP_CONCAT(DISTINCT ?Genres; SEPARATOR="||") AS ?Genres)  
