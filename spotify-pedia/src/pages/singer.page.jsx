@@ -74,6 +74,9 @@ export default class SingerPage extends React.Component {
         let albums = this.state.singer.Albums.value.split("|");
         return albums.map((val) => {
             val = val.replace("http://dbpedia.org/resource/", "");
+            val = val.replaceAll("_", " ");
+            var reg = new RegExp(/\(.*[Aa]lbum.*\)/, "g");
+            val = val.replace(reg,"");
             return (<div key={val}>{val}</div>);
         });
     }
@@ -83,6 +86,7 @@ export default class SingerPage extends React.Component {
         let birthPlaces = this.state.singer.BirthPlaces.value;
         birthPlaces = birthPlaces.replaceAll("http://dbpedia.org/resource/", "");
         birthPlaces = birthPlaces.replaceAll(" | ", ", ");
+        birthPlaces = birthPlaces.replaceAll("_", " ");
         return birthPlaces;
     }
 
