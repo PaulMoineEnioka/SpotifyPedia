@@ -12,6 +12,7 @@ export default class SongPage extends React.Component {
             medias: {
                 picture: '',
                 video: '',
+                deezer: '',
             }
         }
     }
@@ -39,7 +40,7 @@ export default class SongPage extends React.Component {
                         
                         FILTER(langMatches(lang(?Artists), "en")). 
                         FILTER(langMatches(lang(?Name), "en")).
-                        FILTER(lcase(str(?Name)) = "${this.props.songName}"). 
+                        FILTER(lcase(str(?Name)) = "${this.props.songName.toLowerCase()}"). 
                     } GROUP BY ?Name ?Track
                 }
             
@@ -92,7 +93,7 @@ export default class SongPage extends React.Component {
     fetchMedias = async () => {
         const trackData = this.formatTrackData();
         const medias = await mediasUtil.getTrackMedias(trackData.artists[0], "SOS");
-        this.setState({medias: {picture: medias.picture, video: medias.video}});
+        this.setState({medias: {picture: medias.picture, video: medias.video, deezer: medias.deezer }});
     }
 
     render = () => {
@@ -180,6 +181,12 @@ export default class SongPage extends React.Component {
 
                                     }
                                 </div>
+                                {this.state.medias.deezer ?
+                                    <iframe title="Deezer artist" scrolling="yes" frameBorder="0"
+                                            src={`https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&id=${this.state.medias.deezer}&app_id=1`}
+                                            width="700" height="100"/>
+                                            : null
+                                }
                             </div>
                         </>
                         : this.state.notFound ? <span>The information of this song cannot be found in English</span> : <CircularProgress className={"loading"}/>}

@@ -99,7 +99,7 @@ export default class TrackTable extends React.Component {
                             <CloseIcon/>
                         </IconButton>
                     </DialogTitle>
-                    <SingerPage singer={this.state.selectedSinger}></SingerPage>
+                    <SingerPage singer={this.state.selectedSinger}/>
                 </Dialog>
             </div>
         );

@@ -12,6 +12,7 @@ export default class SingerPage extends React.Component {
                 picture: '',
                 topSongs: '',
                 biography: '',
+                deezer: '',
             },
             singer: {},
         }
@@ -47,6 +48,7 @@ export default class SingerPage extends React.Component {
                             picture: medias.picture,
                             topSongs: medias.topSongs,
                             biography: medias.biography,
+                            deezer: medias.deezer
                         }
                 }
             );
@@ -94,7 +96,6 @@ export default class SingerPage extends React.Component {
 
     affichageTopSongs() {
         if (!this.state.medias.topSongs || this.state.medias.topSongs === "") return <br/>;
-        console.log(this.state.medias.topSongs);
         return (
             <span>
                 <div>
@@ -105,6 +106,17 @@ export default class SingerPage extends React.Component {
                 <br/>
             </span>
         );
+    }
+
+    affichageDeezer = () => {
+        if (!this.state.medias.deezer) return null;
+        return (
+            <div className="bottombar">
+                <iframe title="Deezer artist" scrolling="yes" frameBorder="0"
+                        src={`https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=artist&id=${this.state.medias.deezer}&app_id=1`}
+                        width="700" height="100"/>
+            </div>
+        )
     }
 
     render = () => {
@@ -235,6 +247,7 @@ export default class SingerPage extends React.Component {
                                     this.state.medias.biography
                                 }
                             </div>
+                            {this.affichageDeezer()}
                         </> : <CircularProgress className={"loading"}/>
                     }
 

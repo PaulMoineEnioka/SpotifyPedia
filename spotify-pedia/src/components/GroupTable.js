@@ -42,8 +42,7 @@ export default class TrackTable extends React.Component {
         }
 
         const queryString = "select ?group ?Name ?Comment str(?StartYear) as ?StartYearString GROUP_CONCAT(DISTINCT ?Genre;SEPARATOR=\" | \") as ?Genres GROUP_CONCAT(DISTINCT ?Album;SEPARATOR=\" | \") as ?Albums GROUP_CONCAT(DISTINCT ?Members;SEPARATOR=\" | \") as ?Members GROUP_CONCAT(DISTINCT ?Former_Members;SEPARATOR=\" | \") as ?Former_Members GROUP_CONCAT(DISTINCT ?Link;SEPARATOR=\" | \") as ?HomepageLink where { ?group rdf:type dbo:Group. ?group rdfs:label ?Name. ?group dbo:activeYearsStartYear ?StartYear. OPTIONAL{ ?group foaf:homepage ?Link. } OPTIONAL{ {?group dbo:bandMember ?Members. ?Members rdf:type dbo:Person.} UNION {?group dbp:pastMembers ?Members.} }. OPTIONAL{ ?group dbo:formerBandMember ?Former_Members. ?Former_Members rdf:type dbo:Person. }. OPTIONAL{ ?group dbo:genre ?Genre. }. OPTIONAL{ ?group rdfs:comment ?Comment. }. OPTIONAL{ ?group ^dbo:artist ?Album. ?Album rdf:type dbo:Album. }. FILTER(regex(?Name, \".*" + keyword + ".*\") && langMatches(lang(?Name),\"EN\") && langMatches(lang(?Comment),\"EN\")). } LIMIT 100";
-        
-        console.log("request="+queryString);
+
         //  \".*" + keyword + ".*\"
         const formData = new FormData();
         formData.append('query', queryString)
@@ -59,7 +58,6 @@ export default class TrackTable extends React.Component {
                 this.setState({
                     groups: response.results.bindings,
                 });
-                console.log(this.state.groups);
             }
             ); // parses JSON response into native JavaScript objects
     }

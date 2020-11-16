@@ -1,6 +1,7 @@
 import React from "react";
 import {CircularProgress} from '@material-ui/core';
 import "../style/album.page.css";
+import mediasUtil from '../utils/medias.util';
 
 
 export default class AlbumPage extends React.Component {
@@ -10,7 +11,11 @@ export default class AlbumPage extends React.Component {
         this.state = {
             albums: [],
             albumName: props.albumName,
-            albumArtist: props.artistName
+            albumArtist: props.artistName,
+            medias: {
+                picture: '',
+                deezer: ''
+            }
         };
     }
 
@@ -44,8 +49,17 @@ export default class AlbumPage extends React.Component {
                     this.setState({
                         albums: response.results.bindings,
                     });
+                    const albums = response.results.bindings;
+                    if (albums && albums.length) {
+                        this.getMedias(albums[0].ArtistName.value, albums[0].AlbumName.value);
+                    }
                 }
             ); // parses JSON response into native JavaScript objects
+    }
+
+    getMedias = async (artistName, albumName) => {
+        const res = await mediasUtil.getAlbumMedias(artistName, albumName);
+        this.setState({ medias: { picture: res.picture, deezer: res.deezer}});
     }
 
     componentDidMount = () => {
@@ -63,6 +77,7 @@ export default class AlbumPage extends React.Component {
                             <strong>Description</strong>
                             <p>{this.state.albums[0].Description.value}</p>
                         </div>
+                        <img src={this.state.medias.picture} alt="" className="imgSinger"/>
                     </div>
                 );
             } else {
@@ -73,6 +88,7 @@ export default class AlbumPage extends React.Component {
                             <strong>Description</strong>
                             <p>unknown</p>
                         </div>
+                        <img src={this.state.medias.picture} alt="" className="imgSinger"/>
                     </div>
                 );
             }
@@ -188,6 +204,17 @@ export default class AlbumPage extends React.Component {
         }
     }
 
+    renderDeezer = () => {
+        if (!this.state.medias.deezer) return null;
+        return (
+            <div className="bottombar">
+                <iframe title="Deezer album" scrolling="yes" frameBorder="0"
+                        src={`https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=album&id=${this.state.medias.deezer}&app_id=1`}
+                        width="700" height="350"/>
+            </div>
+        )
+    }
+
     render = () => {
         return (
             <div className={"page"}>
@@ -199,6 +226,7 @@ export default class AlbumPage extends React.Component {
                             {this.renderMainInfos()}
                             {this.renderTitles()}
                             {this.renderAwards()}
+                            {this.renderDeezer()}
                         </> : <CircularProgress className={"loading"}/>
                     }
                 </div>

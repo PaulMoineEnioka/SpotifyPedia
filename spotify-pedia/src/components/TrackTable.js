@@ -72,7 +72,6 @@ WHERE {
     )
         .then((res) => res.json())
         .then((result) => {
-            console.log(result);
           base.setState({
             fetchedData: true,
             tracks: result.results.bindings,
@@ -105,7 +104,6 @@ WHERE {
       selectedName: null,
       selectedArtsit: null
     })
-    console.log("Closed popup");
   }
   
   render = () => {
