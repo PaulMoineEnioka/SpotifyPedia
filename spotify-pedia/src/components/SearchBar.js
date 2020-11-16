@@ -56,3 +56,11 @@ class SearchBar extends Component {
 }
 
 export default SearchBar;
+
+
+/*
+<iframe scrolling="no" frameBorder="0" allowTransparency="true"
+        src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=album&id=1238967&app_id=1"
+        width="700" height="350"></iframe>
+
+https://api.deezer.com/search/album?q=album:%22loud%22%20artist:%22rihanna%22*/
