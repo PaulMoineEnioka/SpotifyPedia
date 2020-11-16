@@ -8,6 +8,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Group from './Group';
+import GroupPage from "../pages/group.page";
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import { IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -32,6 +37,8 @@ export default class TrackTable extends React.Component {
         super(props);
         this.state = {
             groups: [],
+            selectedGroup: {},
+            hasSelectedGroup: false,
         };
     }
 
@@ -41,9 +48,8 @@ export default class TrackTable extends React.Component {
             keyword = toTitleCase(this.props.keyword);
         }
 
-        const queryString = "select ?group ?Name ?Comment str(?StartYear) as ?StartYearString GROUP_CONCAT(DISTINCT ?Genre;SEPARATOR=\" | \") as ?Genres GROUP_CONCAT(DISTINCT ?Album;SEPARATOR=\" | \") as ?Albums GROUP_CONCAT(DISTINCT ?Members;SEPARATOR=\" | \") as ?Members GROUP_CONCAT(DISTINCT ?Former_Members;SEPARATOR=\" | \") as ?Former_Members GROUP_CONCAT(DISTINCT ?Link;SEPARATOR=\" | \") as ?HomepageLink where { ?group rdf:type dbo:Group. ?group rdfs:label ?Name. ?group dbo:activeYearsStartYear ?StartYear. OPTIONAL{ ?group foaf:homepage ?Link. } OPTIONAL{ {?group dbo:bandMember ?Members. ?Members rdf:type dbo:Person.} UNION {?group dbp:pastMembers ?Members.} }. OPTIONAL{ ?group dbo:formerBandMember ?Former_Members. ?Former_Members rdf:type dbo:Person. }. OPTIONAL{ ?group dbo:genre ?Genre. }. OPTIONAL{ ?group rdfs:comment ?Comment. }. OPTIONAL{ ?group ^dbo:artist ?Album. ?Album rdf:type dbo:Album. }. FILTER(regex(?Name, \".*" + keyword + ".*\") && langMatches(lang(?Name),\"EN\") && langMatches(lang(?Comment),\"EN\")). } LIMIT 100";
+        const queryString = "select ?Id ?Name where { ?group rdf:type dbo:Group. ?group dbo:wikiPageID ?Id. ?group rdfs:label ?Name. ?group dbo:activeYearsStartYear ?StartYear. FILTER(regex(?Name, \".*" + keyword + ".*\") && langMatches(lang(?Name),\"EN\") ).} LIMIT 20";
 
-        //  \".*" + keyword + ".*\"
         const formData = new FormData();
         formData.append('query', queryString)
         fetch("http://dbpedia.org/sparql", {
@@ -62,24 +68,35 @@ export default class TrackTable extends React.Component {
             ); // parses JSON response into native JavaScript objects
     }
 
-    /*componentDidMount = async () => {
-        this.fetchData();
-    }
-    */
     componentDidUpdate = (prevProps) => {
         if (this.props.keyword !== prevProps.keyword) this.fetchData();
     }
 
     renderGroup(uniqueKey, i) {
         if (this.state.groups.length > i) {
-            return (<Group group={this.state.groups[i]} index={uniqueKey} key={uniqueKey}></Group>);
+            return (<Group onClick={(group) => this.handleRowClick(group)} group={this.state.groups[i]}
+                            index={uniqueKey} key={uniqueKey}/>);
         }
     }
 
+    handleRowClick = (group) => { //When click on a row
+        this.setState({
+            selectedGroup: group,
+            hasSelectedGroup: true,
+        });
+    }
+
+    handleClose = () => { //Close the popup
+        this.setState({
+            hasSelectedGroup: false,
+        })
+    }
+
     render() {
+
         const groups = this.state.groups.map((step,index) => {
-            return (this.renderGroup(step.Group, index));
-          });
+            return (this.renderGroup(step.Id.value, index));
+        });
 
         return (
             <div>
@@ -88,13 +105,6 @@ export default class TrackTable extends React.Component {
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>Group</StyledTableCell>
-                                <StyledTableCell align="right">Start Year</StyledTableCell>
-                                <StyledTableCell align="right">Genre</StyledTableCell>
-                                <StyledTableCell align="right">Description</StyledTableCell>
-                                <StyledTableCell align="right">Members</StyledTableCell>
-                                <StyledTableCell align="right">Former Members</StyledTableCell>
-                                <StyledTableCell align="right">HomePage</StyledTableCell>
-                                <StyledTableCell align="right">Albums</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -104,6 +114,14 @@ export default class TrackTable extends React.Component {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Dialog onClose={this.handleClose} open={this.state.hasSelectedGroup} fullScreen={true}>
+                    <DialogTitle id="simple-dialog-title">
+                        <IconButton onClick={this.handleClose}>
+                            <CloseIcon/>
+                        </IconButton>
+                    </DialogTitle>
+                    <GroupPage singer={this.state.selectedGroup}/>
+                </Dialog>
             </div>
         );
     }

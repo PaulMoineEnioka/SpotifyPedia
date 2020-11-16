@@ -6,6 +6,7 @@ import SearchBar from "./components/SearchBar";
 import TrackTable from "./components/TrackTable";
 import AlbumTable from './components/AlbumTable';
 import SingerTable from "./components/SingerTable";
+import GroupTable from "./components/GroupTable";
 
 class App extends Component {
     constructor(props) {
@@ -33,6 +34,8 @@ class App extends Component {
         switch (this.state.type) {
             case 'artist':
                 return <SingerTable keyword={this.state.keyword}/>;
+            case 'group':
+              return <GroupTable keyword={this.state.keyword}/>;
             case 'album':
                 return <AlbumTable keyword={this.state.keyword}/>
             case 'track':
