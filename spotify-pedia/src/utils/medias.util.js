@@ -38,10 +38,13 @@ const getSingerMedias = async(singerName) => {
         const jsonResponse = await res.json();
         if (jsonResponse && jsonResponse.artists && jsonResponse.artists.length) {
             const singer = jsonResponse.artists[0];
-            console.log(singer);
             const singerPicture = singer.strArtistThumb;
+            const topSongs = singer.strLastFMChart;
+            const biography = singer.strBiographyEN;
             return {
                 picture: singerPicture,
+                topSongs: topSongs,
+                biography: biography,
             };
         }
     } catch (error) {
@@ -49,6 +52,8 @@ const getSingerMedias = async(singerName) => {
     }
     return {
         picture: '',
+        topSongs: '',
+        biography: '',
     };
 };
 
