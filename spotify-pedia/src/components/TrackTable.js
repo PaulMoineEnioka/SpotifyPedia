@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import { Component } from "react";
-import Paper from "@material-ui/core/Paper";
 import React from "react";
 import SongPage from "../pages/song.page";
 import Table from "@material-ui/core/Table";
@@ -38,10 +36,12 @@ class TrackTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tracks: [],
-      fetchedData: false,
-      error: null,
-      popupOpen: false
+        tracks: [],
+        fetchedData: false,
+        error: null,
+        popupOpen: false,
+        selectedName: null,
+        selectedArtist: null
     };
   }
 
@@ -72,6 +72,7 @@ WHERE {
     )
         .then((res) => res.json())
         .then((result) => {
+            console.log(result);
           base.setState({
             fetchedData: true,
             tracks: result.results.bindings,
@@ -108,12 +109,8 @@ WHERE {
   }
   
   render = () => {
-    const { tracks, fetchedData, selectedName, selectedArtsit} = this.state;
-    const closeImg = {cursor:'pointer', float:'right', marginTop: '5px', width: '20px'};
-    console.log("state:");
-    console.log(this.state);
-    console.log(this.props);
-    console.log(tracks);
+    const { tracks, selectedName, selectedArtsit} = this.state;
+    const openPopup = (selectedName && selectedArtsit) !== null;
     return (
       <>
       <TableContainer>
@@ -128,7 +125,7 @@ WHERE {
             {tracks.map((track) => (
               <StyledTableRow key={track.Name.value + track.Artists.value} >
                 <StyledTableCell align="right">
-                  <a onClick= {() => this.handleRowClick(track.Name.value,track.Artists.value)}>{track.Name.value}</a>
+                  <button onClick= {() => this.handleRowClick(track.Name.value,track.Artists.value)}>{track.Name.value}</button>
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {track.Artists.value.split("||").map((p) => (
@@ -140,7 +137,7 @@ WHERE {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog onClose={this.handleClose} open={selectedName && selectedArtsit} fullScreen={true}>
+      <Dialog onClose={this.handleClose} open={openPopup} fullScreen={true}>
         <DialogTitle id="simple-dialog-title">
           <IconButton onClick={this.handleClose}>
             <CloseIcon />

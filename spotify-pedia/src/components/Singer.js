@@ -18,19 +18,20 @@ export default class Singer extends React.Component {
         this.setState({
             cursorStyle: {
                 cursor: "pointer",
-              },
+            },
         });
     }
 
     render() {
-        if(!this.props.singer.Name) {
+        if (!this.props.singer.Name) {
             this.props.singer.Name = {};
             this.props.singer.Name.value = "";
         }
 
         return (
             <StyledTableRow key={this.props.index}>
-                <StyledTableCell style={this.state.cursorStyle} onMouseOver={this.mouseOver} onClick={() => this.props.onClick(this.props.singer)}>{this.props.singer.Name.value}</StyledTableCell>
+                <StyledTableCell style={this.state.cursorStyle} onMouseOver={this.mouseOver}
+                                 onClick={() => this.props.onClick(this.props.singer)}>{this.props.singer.Name.value}</StyledTableCell>
             </StyledTableRow>
         );
     }

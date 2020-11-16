@@ -1,4 +1,7 @@
-
+.page .loading {
+    margin: auto;
+    display: block;
+}
 .page .panel {
     margin: 20px auto;
     width: calc(80% - 100px);

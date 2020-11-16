@@ -1,14 +1,11 @@
 import './App.css';
 
 import { Component } from "react";
-import AlbumPage from "./pages/album.page";
 import React from "react";
 import SearchBar from "./components/SearchBar";
-import SongPage from "./pages/song.page";
 import TrackTable from "./components/TrackTable";
 import AlbumTable from './components/AlbumTable';
 import SingerTable from "./components/SingerTable";
-import GroupTable from "./components/GroupTable";
 
 class App extends Component {
     constructor(props) {
@@ -24,40 +21,18 @@ class App extends Component {
     }
 
     render() {
-
-        /*return (
-          <div>
-            <SearchBar updateKeyword={this.updateKeyword}/>
-            <TrackTable keyword={this.state.keyword}/>
-            <SongPage song = { songData[1] }/>
-          </div>
-        );*/
-        /*return (
-          <div>
-            <SearchBar updateKeyword={this.updateKeyword}/>
-            <TrackTableSinger keyword={this.state.keyword}></TrackTableSinger>
-          </div>
-        );*/
-
-
         return (
             <div>
                 <SearchBar updateKeyword={this.updateKeyword}/>
                 {this.renderTable()}
             </div>
         );
-
-        /*return(
-          <div>
-            <AlbumPage albumName = '"Thriller"@en' artistName = '"Michael Jackson"@en'/>
-          </div>
-        );*/
     }
 
     renderTable = () => {
         switch (this.state.type) {
             case 'artist':
-                return <SingerTable keyword={this.state.keyword}></SingerTable>;
+                return <SingerTable keyword={this.state.keyword}/>;
             case 'album':
                 return <AlbumTable keyword={this.state.keyword}/>
             case 'track':

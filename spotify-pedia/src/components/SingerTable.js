@@ -27,7 +27,7 @@ export default class TrackTable extends React.Component {
 
     fetchData = () => {
         let keyword = "";
-        if(this.props.keyword) {
+        if (this.props.keyword) {
             keyword = toTitleCase(this.props.keyword);
         }
         const queryString = "select ?Name ?Id where { ?Singer rdf:type dbo:MusicalArtist. ?Singer dbo:wikiPageID ?Id. ?Singer rdfs:label ?Name. ?Singer dbo:activeYearsStartYear ?StartYear.  FILTER(regex(?Name, \".*" + keyword + ".*\") && langMatches(lang(?Name),\"EN\")). } LIMIT 20"; //StartYear pour vérifier que ce soit bien un artiste
@@ -41,11 +41,11 @@ export default class TrackTable extends React.Component {
             body: formData
         }).then(response => response.json())
             .then(response => {
-                this.setState({
-                    singers: response.results.bindings,
-                });
-            }
-        ); 
+                    this.setState({
+                        singers: response.results.bindings,
+                    });
+                }
+            );
     }
 
     componentDidUpdate = (prevProps) => { //Update data
@@ -54,7 +54,8 @@ export default class TrackTable extends React.Component {
 
     renderSinger(uniqueKey, i) { //Display a singer
         if (this.state.singers.length > i) {
-            return (<Singer onClick= {(singer) => this.handleRowClick(singer)} singer={this.state.singers[i]} index={uniqueKey} key={uniqueKey}></Singer>);
+            return (<Singer onClick={(singer) => this.handleRowClick(singer)} singer={this.state.singers[i]}
+                            index={uniqueKey} key={uniqueKey}/>);
         }
     }
 
@@ -69,13 +70,12 @@ export default class TrackTable extends React.Component {
         this.setState({
             hasSelectedSinger: false,
         })
-        console.log("Closed popup");
     }
 
     render() {
-        const singers = this.state.singers.map((step,index) => {
+        const singers = this.state.singers.map((step, index) => {
             return (this.renderSinger(step.Id.value, index));
-          });
+        });
 
         return (
             <div>
@@ -87,16 +87,16 @@ export default class TrackTable extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {
-                        singers
-                        }
+                            {
+                                singers
+                            }
                         </TableBody>
                     </Table>
                 </TableContainer>
                 <Dialog onClose={this.handleClose} open={this.state.hasSelectedSinger} fullScreen={true}>
                     <DialogTitle id="simple-dialog-title">
                         <IconButton onClick={this.handleClose}>
-                            <CloseIcon />
+                            <CloseIcon/>
                         </IconButton>
                     </DialogTitle>
                     <SingerPage singer={this.state.selectedSinger}></SingerPage>
