@@ -42,7 +42,7 @@ export default class GroupPage extends React.Component {
 
     fetchMedias = async () => { //Get media info
         if (this.props.group) {
-            const medias = await mediasUtil.getGroupMedias(this.props.group.Name.value);
+            const medias = await mediasUtil.getSingerMedias(this.props.group.Name.value);
             this.setState(
                 {
                     medias:
@@ -59,7 +59,7 @@ export default class GroupPage extends React.Component {
 
     componentDidMount = () => { //Load data
         this.fetchData();
-        //this.fetchMedias();
+        this.fetchMedias();
         // Il faut créer la méthode dans media.utils.js
     }
 
@@ -67,7 +67,7 @@ export default class GroupPage extends React.Component {
         if (this.props.group !== prevProps.group) {
             if (this.props.group !== undefined) {
                 this.fetchData();
-                //this.fetchMedias();
+                this.fetchMedias();
             }
         }
     }
@@ -214,14 +214,19 @@ export default class GroupPage extends React.Component {
                                     {group.Name.value}
                                 </h1>
                             </div>
+
                             <div>
                                 <strong>Start Year : </strong>
                                 {
                                     group.StartYearString.value !== "" ? group.StartYearString.value : "Unknown"
                                 }
                             </div>
-                            <br/>
                             <div className="topbar">
+                                <img className="imgGroup" src={this.state.medias.picture} alt={""}/>
+                            </div>
+                            
+                            <br/>
+                            <div className="main-infos">
                                 <div>
                                     <strong>Description</strong>
                                     <p>{group.Comment.value}</p>
@@ -246,12 +251,11 @@ export default class GroupPage extends React.Component {
                                 <br/>
                             </div>
                             <br/>
-                            <div className="main-infos">
+                            <div>
                                 <div><strong>Albums : </strong> 
                                 <br/>
                                 {this.affichageAlbum(group)}
                                 </div>
-                                <img className="imgGroup" src={this.state.medias.picture} alt={""}/>
                             </div>               
                             <br/>
                             <br/>
