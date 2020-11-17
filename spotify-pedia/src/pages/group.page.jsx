@@ -84,9 +84,41 @@ export default class GroupPage extends React.Component {
         });
     }
 
-    /*affichageMembers(group) { //Display list of members
+    affichageMembers(group) { //Display list of members
+        if (group.Members.value === "") return (<div>None</div>);
+        let members = this.state.group.Members.value.split("|");
+        return members.map((val) => {
+            val = val.replace("http://dbpedia.org/resource/", "");
+            val = val.replaceAll("_", " ");
+            var reg = new RegExp(/\(.*[Aa]lbum.*\)/, "g");
+            val = val.replace(reg,"");
+            return (<div key={val}>{val}</div>);
+        });
+    }
 
-    }*/
+    affichageFormerMembers(group) { //Display list of former members
+        if (group.Former_Members.value === "") return (<div>None</div>);
+        let members = this.state.group.Former_Members.value.split("|");
+        return members.map((val) => {
+            val = val.replace("http://dbpedia.org/resource/", "");
+            val = val.replaceAll("_", " ");
+            var reg = new RegExp(/\(.*[Aa]lbum.*\)/, "g");
+            val = val.replace(reg,"");
+            return (<div key={val}>{val}</div>);
+        });
+    }
+
+    affichageGenres(group) { //Display list of former members
+        if (group.Genres.value === "") return (<div>None</div>);
+        let genres = this.state.group.Genres.value.split("|");
+        return genres.map((val) => {
+            val = val.replace("http://dbpedia.org/resource/", "");
+            val = val.replaceAll("_", " ");
+            var reg = new RegExp(/\(.*[Aa]lbum.*\)/, "g");
+            val = val.replace(reg,"");
+            return (<div key={val}>{val}</div>);
+        });
+    }
 
     affichageHomepages(group) { //Display list of homepages
         if (group.HomepageLink.value === "") return (<span>Unknown</span>);
@@ -175,61 +207,63 @@ export default class GroupPage extends React.Component {
         return (
             <div className={"page"}>
                 <div className="panel">
-                    <div className="titlebar">
-                        <h1>{group.Name.value}</h1>
-                    </div>
-                    <div className="topbar">
-                        <div>
-                            <strong>Description</strong>
-                            <p>{group.Comment.value}</p>
-                        </div>
-                        <img src={this.state.medias.picture} alt={""}/>
-                    </div>
-                    <div className="main-infos">
-                        <div><strong>Albums : </strong> 
-                        <br/>
-                        {this.affichageAlbum(group)}
-                        </div>
-                    </div>
-                    <div>
-                        <strong>Members : </strong>
-                        {
-                            group.Members.value
-                        }
-                    </div>
-                    <br/>
-                    <br/>
-                    <div>
-                        <strong>Formers members : </strong>
-                        {
-                            
-                        }
-                    </div>
-                    <br/>
-                    <div>
-                        <strong> : </strong>
-        
-                    </div>
-                    <br/>
-                    <div>
-                        <strong>Start Year : </strong>
-                        {
-                            group.StartYearString.value
-                        }
-                    </div>
-                    <br/>
-                    <div>
-                        <strong>Quote : </strong>
-                        {
-                        }
-                    </div>
-                    <br/>
-                    <div>
-                        <strong>Homepage(s) : </strong>
-                        {
-                            this.affichageHomepages(group)
-                        }
-                    </div>
+                    {this.props.group ?
+                        <>
+                            <div className="titlebar">
+                                <h1>
+                                    {group.Name.value}
+                                </h1>
+                            </div>
+                            <div>
+                                <strong>Start Year : </strong>
+                                {
+                                    group.StartYearString.value !== "" ? group.StartYearString.value : "Unknown"
+                                }
+                            </div>
+                            <br/>
+                            <div className="topbar">
+                                <div>
+                                    <strong>Description</strong>
+                                    <p>{group.Comment.value}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <strong>Genre(s) musical: </strong>
+                                <br/>
+                                {this.affichageGenres(group)}
+                                <br/>
+                            </div>
+                            <div>
+                                <strong>Members : </strong>
+                                <br/>
+                                {this.affichageMembers(group)}
+                                <br/>
+                            </div>
+                            <div>
+                                <strong>Formers members : </strong>
+                                <br/>
+                                {this.affichageFormerMembers(group)}
+                                <br/>
+                            </div>
+                            <br/>
+                            <div className="main-infos">
+                                <div><strong>Albums : </strong> 
+                                <br/>
+                                {this.affichageAlbum(group)}
+                                </div>
+                                <img className="imgGroup" src={this.state.medias.picture} alt={""}/>
+                            </div>               
+                            <br/>
+                            <br/>
+                            <div>
+                                <strong>Homepage(s) : </strong>
+                                {
+                                    this.affichageHomepages(group)
+                                }
+                            </div>
+                            {this.affichageDeezer()}
+                        </> : <CircularProgress className={"loading"}/>
+                    }
                 </div>
             </div>
         );
