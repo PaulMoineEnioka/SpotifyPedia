@@ -45,10 +45,8 @@ export default class SearchResults extends React.Component {
     }
 
     renderTrack = (track) => {
-        return <div onClick={() => this.setState({
-            showDetails: true,
-            details: {type: 'track', song: track.Name.value, artists: track.Artists.value}
-        })} className={"result track"} key={"track_" + track.Name.value + track.Artists.value}>
+        return <div onClick={() => this.openDetails('track', {trackId: track.Track.value}
+        )} className={"result track"} key={"track_" + track.Name.value + track.Artists.value}>
             <span className="type">Track</span>
             <span className="name">{track.Name.value}</span>
             <span className="artists">{track.Artists.value.split("||").join(', ')}</span>
@@ -56,7 +54,7 @@ export default class SearchResults extends React.Component {
     };
 
     renderArtist = (singer) => {
-        return <div onClick={() => this.setState({showDetails: true, details: {type: 'artist', singer}})} className="result singer"
+        return <div onClick={() => this.openDetails('artist', {singer})} className="result singer"
                     key={"singer_" + singer.Id.value}>
             <span className="type">Singer</span>
             <span className="name">{singer.Name.value}</span>
@@ -64,10 +62,11 @@ export default class SearchResults extends React.Component {
     }
 
     renderAlbum = (album) => {
-        return <div onClick={() => this.setState({
-            showDetails: true,
-            details: {type: 'album', album: '"' + album.AlbumName.value + '"@en', artists: '"' + album.ArtistName.value + '"@en'}
-        })} className="result album" key={"album_" + album.AlbumName.value + album.ArtistName.value}>
+        return <div onClick={() => this.openDetails("album", {
+                album: '"' + album.AlbumName.value + '"@en',
+                artists: '"' + album.ArtistName.value + '"@en'
+            }
+        )} className="result album" key={"album_" + album.AlbumName.value + album.ArtistName.value}>
             <span className="type">Album</span>
             <span className="name">{album.AlbumName.value}</span>
             <span className="artists">{album.ArtistName.value}</span>
@@ -84,13 +83,17 @@ export default class SearchResults extends React.Component {
                 </DialogTitle>
                 {
                     this.state.details.type === 'album' ?
-                        <AlbumPage albumName={this.state.details.album} artistName={this.state.details.artists}/>
+                        <AlbumPage albumName={this.state.details.album} artistName={this.state.details.artists} openDetails={this.openDetails}/>
                         : this.state.details.type === 'artist' ?
-                        <SingerPage singer={this.state.details.singer}/>
-                        : <SongPage songName={this.state.details.song} artists={this.state.details.artists}/>
+                        <SingerPage singer={this.state.details.singer} openDetails={this.openDetails}/>
+                        : <SongPage openDetails={this.openDetails} trackId={this.state.details.trackId} />
                 }
             </Dialog>);
     }
+
+    openDetails = (type, data) => {
+        this.setState({showDetails: true, details: {type, ...data}});
+    };
 
     handleClose = () => {
         this.setState({showDetails: false});

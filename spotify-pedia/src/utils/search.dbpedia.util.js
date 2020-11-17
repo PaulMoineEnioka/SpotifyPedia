@@ -1,12 +1,12 @@
 function toTitleCase(str) { //cf : https://www.w3docs.com/snippets/javascript/how-to-convert-string-to-title-case-with-javascript.html
-    return str.toLowerCase().split(' ').map(function (word) {
+    return str.toLowerCase().split(' ').map(function(word) {
         return (word.charAt(0).toUpperCase() + word.slice(1));
     }).join(' ');
 }
 
 const searchAlbum = async (keyword) => {
     const res = await fetch(
-        `http://dbpedia.org/sparql?query=SELECT DISTINCT ?AlbumName ?ArtistName
+      `http://dbpedia.org/sparql?query=SELECT DISTINCT ?AlbumName ?ArtistName
         WHERE {
           ?Album a schema:MusicAlbum;
           foaf:name ?AlbumName;
@@ -18,11 +18,11 @@ const searchAlbum = async (keyword) => {
           FILTER(langMatches(lang(?AlbumName), "en")). 
           FILTER(langMatches(lang(?ArtistName),"en")).
           } LIMIT 50`, {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-            },
-        }
+          method: "GET",
+          headers: {
+              Accept: "application/json",
+          },
+      }
     );
     return (await res.json()).results.bindings;
 }
@@ -44,7 +44,7 @@ const searchSinger = async (keyword) => {
 
 const searchTrack = async (keyword) => {
     const res = await fetch(
-        `http://dbpedia.org/sparql?query=SELECT DISTINCT ?Name ?Desc
+      `http://dbpedia.org/sparql?query=SELECT DISTINCT ?Name ?Desc ?Track
     (GROUP_CONCAT(DISTINCT ?Artists; SEPARATOR="||") AS ?Artists)
 WHERE {
     ?Track rdf:type dbo:Single.
@@ -59,12 +59,12 @@ WHERE {
     FILTER(langMatches(lang(?Name), "en")).
     FILTER(langMatches(lang(?Artists), "en")).
     
-} GROUP BY ?Name ?Desc LIMIT 20`, {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-            },
-        }
+} GROUP BY ?Name ?Desc ?Track LIMIT 20`, {
+          method: "GET",
+          headers: {
+              Accept: "application/json",
+          },
+      }
     )
     return (await res.json()).results.bindings;
 }

@@ -20,19 +20,19 @@ class App extends Component {
     }
 
     updateKeyword = async (value, type) => {
-        this.setState({keyword: value, type});
+        this.setState({ keyword: value, type });
         switch (type) {
             case "artist":
                 const singers = await searchDbpediaUtil.searchSinger(value);
-                this.setState({results: [...singers.map(s => ({type: 'artist', data: s}))]});
+                this.setState({ results: [...singers.map(s => ({ type: 'artist', data: s }))] });
                 break;
             case "album":
                 const albums = await searchDbpediaUtil.searchAlbum(value);
-                this.setState({results: [...albums.map(a => ({type: 'album', data: a}))]});
+                this.setState({ results: [...albums.map(a => ({ type: 'album', data: a }))] });
                 break;
             case "track":
                 const tracks = await searchDbpediaUtil.searchTrack(value);
-                this.setState({results: [...tracks.map(t => ({type: 'track', data: t}))]});
+                this.setState({ results: [...tracks.map(t => ({ type: 'track', data: t }))] });
                 break;
             default:
                 const albumss = await searchDbpediaUtil.searchAlbum(value);
@@ -42,7 +42,7 @@ class App extends Component {
                     results: [...albumss.map(a => ({
                         type: 'album',
                         data: a
-                    })), ...singerss.map(s => ({type: 'artist', data: s})), ...trackss.map(t => ({
+                    })), ...singerss.map(s => ({ type: 'artist', data: s })), ...trackss.map(t => ({
                         type: 'track',
                         data: t
                     }))]
@@ -52,21 +52,21 @@ class App extends Component {
 
     render() {
         return (
-            <div>
-                <SearchBar updateKeyword={this.updateKeyword}/>
-                <SearchResults results={this.state.results} />
-            </div>
+          <div>
+              <SearchBar updateKeyword={this.updateKeyword} />
+              <SearchResults results={this.state.results} />
+          </div>
         );
     }
 
     renderTable = () => {
         switch (this.state.type) {
             case 'artist':
-                return <SingerTable keyword={this.state.keyword}/>;
+                return <SingerTable keyword={this.state.keyword} />;
             case 'album':
-                return <AlbumTable keyword={this.state.keyword}/>
+                return <AlbumTable keyword={this.state.keyword} />
             case 'track':
-                return <TrackTable keyword={this.state.keyword}/>
+                return <TrackTable keyword={this.state.keyword} />
             default:
                 return null;
         }

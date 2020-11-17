@@ -22,9 +22,9 @@ export default class SongPage extends React.Component {
     }
 
     fetchData = async () => {
-        console.log(this.props);
         const request = `
-            SELECT DISTINCT ?Name ?Desc ?Artists
+            SELECT DISTINCT ?Name ?Desc
+                (GROUP_CONCAT(DISTINCT ?Artists; SEPARATOR="||") AS ?Artists)
                 (GROUP_CONCAT(DISTINCT ?Genres; SEPARATOR="||") AS ?Genres)  
                 (GROUP_CONCAT(DISTINCT ?Albums; SEPARATOR="||") AS ?Albums) 
                 (GROUP_CONCAT(DISTINCT ?ReleaseDates; SEPARATOR="||") AS ?ReleaseDates) 
@@ -32,22 +32,13 @@ export default class SongPage extends React.Component {
                 (GROUP_CONCAT(DISTINCT ?RecordLabels; SEPARATOR="||") AS ?RecordLabels) 
                 (GROUP_CONCAT(DISTINCT ?Writers; SEPARATOR="||") AS ?Writers) 
             WHERE { 
-                {
-                    SELECT DISTINCT ?Track ?Name (GROUP_CONCAT(DISTINCT ?Artists; SEPARATOR="||") AS ?Artists) WHERE {
-                        ?Track rdf:type dbo:Single.
-                        ?Track foaf:name ?Name.
-                        ?Track dbo:musicalArtist ?ArtistsLinks. 
-                        ?ArtistsLinks rdfs:label ?Artists. 
-                        
-                        FILTER(langMatches(lang(?Artists), "en")). 
-                        FILTER(langMatches(lang(?Name), "en")).
-                        FILTER(lcase(str(?Name)) = "${this.props.songName.toLowerCase()}"). 
-                    } GROUP BY ?Name ?Track
-                }
-            
+                ?Track rdf:type dbo:Single.
+                ?Track foaf:name ?Name.
+                ?Track dbo:musicalArtist ?ArtistsLinks. 
                 ?Track dbo:album ?AlbumsLinks. 
                 ?Track dbo:genre ?GenresLinks. 
                 ?Track dbo:releaseDate ?ReleaseDates. 
+                
                 OPTIONAL { 
                     ?Track dbo:abstract ?Desc. 
                     FILTER(langMatches(lang(?Desc), "en")). 
@@ -69,10 +60,14 @@ export default class SongPage extends React.Component {
                 }
                 ?AlbumsLinks rdfs:label ?Albums. 
                 ?GenresLinks rdfs:label ?Genres. 
+                ?ArtistsLinks rdfs:label ?Artists. 
+                
+                FILTER(str(?Track) = "${this.props.trackId}").
+                FILTER(langMatches(lang(?Name), "en")).
+                FILTER(langMatches(lang(?Artists), "en")).  
                 FILTER(langMatches(lang(?Albums), "en")). 
                 FILTER(langMatches(lang(?Genres), "en")).
-                FILTER(regex(lcase(str(?Artists)), ".*${this.props.artists.toLowerCase()}.*")). 
-            } GROUP BY ?Name ?Desc ?Artists`;
+            } GROUP BY ?Name ?Desc`;
         const formData = new FormData();
         formData.append('query', request);
         const res = await (await fetch(`http://dbpedia.org/sparql`, {
@@ -93,7 +88,7 @@ export default class SongPage extends React.Component {
 
     fetchMedias = async () => {
         const trackData = this.formatTrackData();
-        const medias = await mediasUtil.getTrackMedias(trackData.artists[0], "SOS");
+        const medias = await mediasUtil.getTrackMedias(trackData.artists[0], trackData.name);
         this.setState({medias: {picture: medias.picture, video: medias.video, deezer: medias.deezer }});
     }
 
@@ -107,7 +102,7 @@ export default class SongPage extends React.Component {
                         <>
                             <div className="titlebar">
                                 <h1>{trackData.name}</h1>
-                                <h2>{trackData.artists.join(', ')}</h2>
+                                <h2 onClick={() => this.props.openDetails('artist', trackData.artists[0])} className={"clickable"}>{trackData.artists.join(', ')}</h2>
                             </div>
                             <div className="topbar">
                                 <div>
