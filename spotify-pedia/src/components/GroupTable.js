@@ -31,7 +31,7 @@ function toTitleCase(str) { //cf : https://www.w3docs.com/snippets/javascript/ho
     }).join(' ');
   }
 
-export default class TrackTable extends React.Component {
+export default class GroupTable extends React.Component {
 
     constructor(props) {
         super(props);
@@ -53,19 +53,17 @@ export default class TrackTable extends React.Component {
         const formData = new FormData();
         formData.append('query', queryString)
         fetch("http://dbpedia.org/sparql", {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            method: 'POST',
             headers: {
                 'Accept': 'application/json'
-                // 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: formData // body data type must match "Content-Type" header
+            body: formData
         }).then(response => response.json())
             .then(response => {
                 this.setState({
                     groups: response.results.bindings,
                 });
-            }
-            ); // parses JSON response into native JavaScript objects
+            });
     }
 
     componentDidUpdate = (prevProps) => {
@@ -120,7 +118,7 @@ export default class TrackTable extends React.Component {
                             <CloseIcon/>
                         </IconButton>
                     </DialogTitle>
-                    <GroupPage singer={this.state.selectedGroup}/>
+                    <GroupPage group={this.state.selectedGroup}/>
                 </Dialog>
             </div>
         );

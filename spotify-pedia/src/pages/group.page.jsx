@@ -20,9 +20,7 @@ export default class GroupPage extends React.Component {
 
     fetchData = () => { //Get info
         const group = this.props.group;
-        console.log("POST grouppage");
-        console.log(group);
-        const queryString = "select ?group ?Name ?Comment str(?StartYear) as ?StartYearString GROUP_CONCAT(DISTINCT ?Genre;SEPARATOR=\" | \") as ?Genres GROUP_CONCAT(DISTINCT ?Album;SEPARATOR=\" | \") as ?Albums GROUP_CONCAT(DISTINCT ?Members;SEPARATOR=\" | \") as ?Members GROUP_CONCAT(DISTINCT ?Former_Members;SEPARATOR=\" | \") as ?Former_Members GROUP_CONCAT(DISTINCT ?Link;SEPARATOR=\" | \") as ?HomepageLink where { ?group rdf:type dbo:Group. ?group rdfs:label ?Name. ?group dbo:wikiPageID  ?Id. ?group dbo:activeYearsStartYear ?StartYear. OPTIONAL{ ?group foaf:homepage ?Link. } OPTIONAL{ {?group dbo:bandMember ?Members. ?Members rdf:type dbo:Person.} UNION {?group dbp:pastMembers ?Members.} }. OPTIONAL{ ?group dbo:formerBandMember ?Former_Members. ?Former_Members rdf:type dbo:Person. }. OPTIONAL{ ?group dbo:genre ?Genre. }. OPTIONAL{ ?group rdfs:comment ?Comment. }. OPTIONAL{ ?group ^dbo:artist ?Album. ?Album rdf:type dbo:Album. }. FILTER(regex(str(?Id), \"152438\") && langMatches(lang(?Name),\"EN\") && langMatches(lang(?Comment),\"EN\")). } LIMIT 1";
+        const queryString = "select ?group ?Name ?Comment str(?StartYear) as ?StartYearString GROUP_CONCAT(DISTINCT ?Genre;SEPARATOR=\" | \") as ?Genres GROUP_CONCAT(DISTINCT ?Album;SEPARATOR=\" | \") as ?Albums GROUP_CONCAT(DISTINCT ?Members;SEPARATOR=\" | \") as ?Members GROUP_CONCAT(DISTINCT ?Former_Members;SEPARATOR=\" | \") as ?Former_Members GROUP_CONCAT(DISTINCT ?Link;SEPARATOR=\" | \") as ?HomepageLink where { ?group rdf:type dbo:Group. ?group rdfs:label ?Name. ?group dbo:wikiPageID  ?Id. ?group dbo:activeYearsStartYear ?StartYear. OPTIONAL{ ?group foaf:homepage ?Link. } OPTIONAL{ {?group dbo:bandMember ?Members. ?Members rdf:type dbo:Person.} UNION {?group dbp:pastMembers ?Members.} }. OPTIONAL{ ?group dbo:formerBandMember ?Former_Members. ?Former_Members rdf:type dbo:Person. }. OPTIONAL{ ?group dbo:genre ?Genre. }. OPTIONAL{ ?group rdfs:comment ?Comment. }. OPTIONAL{ ?group ^dbo:artist ?Album. ?Album rdf:type dbo:Album. }. FILTER(regex(str(?Id), \"^"+ group.Id.value + "$\") && langMatches(lang(?Name),\"EN\") && langMatches(lang(?Comment),\"EN\")). } LIMIT 1";
         const formData = new FormData();
         formData.append('query', queryString)
         fetch("http://dbpedia.org/sparql", {
@@ -32,12 +30,10 @@ export default class GroupPage extends React.Component {
             },
             body: formData
         }).then(response => response.json())
-            
             .then(response => {
                     this.setState({
                         group: response.results.bindings[0],
                     });
-                    
                 }
             );
 
@@ -63,14 +59,15 @@ export default class GroupPage extends React.Component {
 
     componentDidMount = () => { //Load data
         this.fetchData();
-        this.fetchMedias();
+        //this.fetchMedias();
+        // Il faut créer la méthode dans media.utils.js
     }
 
     componentDidUpdate = (prevProps) => { //Update data
         if (this.props.group !== prevProps.group) {
             if (this.props.group !== undefined) {
                 this.fetchData();
-                this.fetchMedias();
+                //this.fetchMedias();
             }
         }
     }
@@ -125,11 +122,11 @@ export default class GroupPage extends React.Component {
     }
     render = () => {
 
-
-        /*if(!this.props.group){
+        if(!this.props.group){
             console.log("return vide");
             return(<div></div>);
-        }*/
+        }
+
         const group = this.state.group;
         console.log("render() grouppage");
         console.log(group);
