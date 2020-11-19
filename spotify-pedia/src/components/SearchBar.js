@@ -54,10 +54,10 @@ class SearchBar extends Component {
                     Search
                 </Button>
                 <select onChange={this.onChangeType} value={this.state.type}>
-                    <option value="artist">Rechercher un artiste</option>
-                    <option value="group">Rechercher un groupe</option>
-                    <option value="album">Rechercher un album</option>
-                    <option value="track">Rechercher une musique</option>
+                    <option value="artist">Search Artists</option>
+                    <option value="group">Search Bands</option>
+                    <option value="album">Search Albums</option>
+                    <option value="track">Search Songs</option>
                 </select>
             </div>
         );
