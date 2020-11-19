@@ -37,7 +37,7 @@ class App extends Component {
                 const groups = await searchDbpediaUtil.searchGroup(value);
                 this.setState({ results: [...groups.map(g => ({ type: 'group', data: g }))] });
                 break;
-            default:
+            case "all":
                 const albumss = await searchDbpediaUtil.searchAlbum(value);
                 const singerss = await searchDbpediaUtil.searchSinger(value);
                 const trackss = await searchDbpediaUtil.searchTrack(value);
