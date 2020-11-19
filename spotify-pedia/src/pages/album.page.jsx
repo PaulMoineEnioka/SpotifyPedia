@@ -20,20 +20,27 @@ export default class AlbumPage extends React.Component {
     }
 
     fetchData = () => {
-        const queryString = `SELECT ?AlbumName ?ArtistName ?Description COUNT(DISTINCT ?TitleName) AS ?Number_of_titles	
-    (GROUP_CONCAT(DISTINCT ?TitleName; SEPARATOR="||") AS ?Titles)	
-    (GROUP_CONCAT(DISTINCT ?Genre_name; SEPARATOR="||") AS ?Genres)	
-    (GROUP_CONCAT(DISTINCT ?Award; SEPARATOR="||") AS ?Awards)	
-    (GROUP_CONCAT(DISTINCT ?Release_Date; SEPARATOR="||") AS ?Release_Dates) WHERE { 
-        ?Album a schema:MusicAlbum; foaf:name ?AlbumName;	
-        dbo:artist ?Artist. ?Artist foaf:name ?ArtistName. 
-        OPTIONAL { { ?Album dbp:title ?Title. ?Title rdfs:label ?TitleName. FILTER(langMatches(lang(?TitleName), "en")). } 
-        UNION { ?Album dbp:title ?TitleName. FILTER(datatype(?TitleName) = rdf:langString).} }
-        OPTIONAL {?Album dbp:award ?Award.}	OPTIONAL {?Album dbo:releaseDate ?Release_Date.	} 
-        OPTIONAL { ?Album dbo:genre ?Genre. ?Genre rdfs:label ?Genre_name.	FILTER(langMatches(lang(?Genre_name), "en")).	}	
-        OPTIONAL {	?Album dbo:abstract ?Description. FILTER(langMatches(lang(?Description), "en")). } FILTER(?AlbumName = ` + this.state.albumName + `). 
-        FILTER(?ArtistName = ` + this.state.albumArtist + `).}`;
-
+        const queryString = `
+            SELECT ?AlbumName ?ArtistName ?Description ?ArtistId ?IsArtistGroup COUNT(DISTINCT ?TitleName) AS ?Number_of_titles	
+                (GROUP_CONCAT(DISTINCT ?TitleName; SEPARATOR="||") AS ?Titles)	
+                (GROUP_CONCAT(DISTINCT ?Title; SEPARATOR="||") AS ?TitlesId)	
+                (GROUP_CONCAT(DISTINCT ?Genre_name; SEPARATOR="||") AS ?Genres)	
+                (GROUP_CONCAT(DISTINCT ?Award; SEPARATOR="||") AS ?Awards)	
+                (GROUP_CONCAT(DISTINCT ?Release_Date; SEPARATOR="||") AS ?Release_Dates) 
+            WHERE { 
+                ?Album a schema:MusicAlbum; foaf:name ?AlbumName;	dbo:artist ?Artist. 
+                ?Artist foaf:name ?ArtistName. 
+                ?Artist dbo:wikiPageID ?ArtistId.
+                OPTIONAL { ?Artist rdf:type dbo:Group. ?Artist dbo:wikiPageID ?IsArtistGroup. } 
+                OPTIONAL { 
+                    { ?Album dbp:title ?Title. ?Title rdfs:label ?TitleName. FILTER(langMatches(lang(?TitleName), "en")). } 
+                    UNION { ?Album dbp:title ?TitleName. FILTER(datatype(?TitleName) = rdf:langString).} 
+                }
+                OPTIONAL {?Album dbp:award ?Award.}	OPTIONAL {?Album dbo:releaseDate ?Release_Date.	} 
+                OPTIONAL { ?Album dbo:genre ?Genre. ?Genre rdfs:label ?Genre_name.	FILTER(langMatches(lang(?Genre_name), "en")).	}	
+                OPTIONAL {	?Album dbo:abstract ?Description. FILTER(langMatches(lang(?Description), "en")). } 
+                FILTER(str(?Album) = "${this.props.albumId}").
+            }`;
 
         const formData = new FormData();
         formData.append('query', queryString)
@@ -100,10 +107,11 @@ export default class AlbumPage extends React.Component {
 
     renderTitleBar() {
         if (this.state.albums.length > 0) {
+            const album = this.state.albums[0];
             return (
                 <div className="titlebar">
                     <h1>{this.state.albums[0].AlbumName.value}</h1>
-                    <h2>By {this.state.albums[0].ArtistName.value}</h2>
+                    <h2>By <span className={"clickable"} onClick={() => album.IsArtistGroup ? this.props.openDetails('group', { groupId: album.ArtistId.value }) : this.props.openDetails('artist', { singerId: album.ArtistId.value})}>{this.state.albums[0].ArtistName.value}</span></h2>
                 </div>
             );
         }

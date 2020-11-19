@@ -19,8 +19,26 @@ export default class SingerPage extends React.Component {
     }
 
     fetchData = () => { //Get info from the singer
-        const singer = this.props.singer;
-        const queryString = "select ?Singer ?Name ?BirthName ?BirthDate ?Description ?Quote ?Gender str(?StartYear) as ?StartYearString GROUP_CONCAT(DISTINCT ?Homepage;SEPARATOR=\" | \") as ?Homepages GROUP_CONCAT(DISTINCT ?BirthPlace;SEPARATOR=\" | \") as ?BirthPlaces GROUP_CONCAT(DISTINCT ?Album;SEPARATOR=\" | \") as ?Albums where { ?Singer rdf:type dbo:MusicalArtist. ?Singer rdfs:label ?Name. ?Singer dbo:wikiPageID  ?Id.  ?Singer dbo:activeYearsStartYear ?StartYear. OPTIONAL{ ?Singer dbo:birthName ?BirthName. }. OPTIONAL{ ?Singer dct:description ?Description. }. OPTIONAL { ?Singer dbp:quote ?Quote }. OPTIONAL { ?Singer foaf:gender ?Gender }. OPTIONAL { ?Singer foaf:homepage ?Homepage }. OPTIONAL{ ?Singer dbo:birthDate ?BirthDate. FILTER(regex(str(?BirthDate),\"(?!0000)[0-9]{4}-((0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-8])|(0[13-9]|1[0-2])-(29|30)|(0[13578]|1[02])-31)\")). }. OPTIONAL{ ?Singer dbo:birthPlace ?BirthPlace. ?BirthPlace rdf:type dbo:Location. }. OPTIONAL{ ?Singer ^dbo:artist ?Album. ?Album rdf:type dbo:Album. }. FILTER(regex(str(?Id), \"^" + singer.Id.value + "$\") && langMatches(lang(?Name),\"EN\")). } LIMIT 1";
+        const queryString = `
+            select ?Singer ?Name ?BirthName ?BirthDate ?Description ?Quote ?Gender str(?StartYear) as ?StartYearString 
+                GROUP_CONCAT(DISTINCT ?Homepage;SEPARATOR=" | ") as ?Homepages 
+                GROUP_CONCAT(DISTINCT ?BirthPlace;SEPARATOR=" | ") as ?BirthPlaces 
+                GROUP_CONCAT(DISTINCT ?Album;SEPARATOR=" | ") as ?Albums 
+            where { 
+                ?Singer rdf:type dbo:MusicalArtist. 
+                ?Singer rdfs:label ?Name. 
+                ?Singer dbo:wikiPageID  ?Id.  
+                ?Singer dbo:activeYearsStartYear ?StartYear. 
+                OPTIONAL{ ?Singer dbo:birthName ?BirthName. }. 
+                OPTIONAL{ ?Singer dct:description ?Description. }. 
+                OPTIONAL { ?Singer dbp:quote ?Quote }. 
+                OPTIONAL { ?Singer foaf:gender ?Gender }. 
+                OPTIONAL { ?Singer foaf:homepage ?Homepage }. 
+                OPTIONAL{ ?Singer dbo:birthDate ?BirthDate. FILTER(regex(str(?BirthDate),"(?!0000)[0-9]{4}-((0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-8])|(0[13-9]|1[0-2])-(29|30)|(0[13578]|1[02])-31)")). }. 
+                OPTIONAL{ ?Singer dbo:birthPlace ?BirthPlace. ?BirthPlace rdf:type dbo:Location. }. 
+                OPTIONAL{ ?Singer ^dbo:artist ?Album. ?Album rdf:type dbo:Album. }. 
+                FILTER(regex(str(?Id), "^${this.props.singerId}$") && langMatches(lang(?Name),"EN")). 
+            } LIMIT 1`;
         const formData = new FormData();
         formData.append('query', queryString)
         fetch("http://dbpedia.org/sparql", {
@@ -31,16 +49,18 @@ export default class SingerPage extends React.Component {
             body: formData
         }).then(response => response.json())
             .then(response => {
+                    this.state.singer = response.results.bindings[0];
                     this.setState({
                         singer: response.results.bindings[0],
                     });
+                    this.fetchMedias();
                 }
             );
     }
 
     fetchMedias = async () => { //Get media info from the singer on theaudiodb.com
-        if (this.props.singer) {
-            const medias = await mediasUtil.getSingerMedias(this.props.singer.Name.value);
+        if (this.state.singer) {
+            const medias = await mediasUtil.getSingerMedias(this.state.singer.Name.value);
             this.setState(
                 {
                     medias:
@@ -57,14 +77,12 @@ export default class SingerPage extends React.Component {
 
     componentDidMount = () => { //Load data
         this.fetchData();
-        this.fetchMedias();
     }
 
     componentDidUpdate = (prevProps) => { //Update data
-        if (this.props.singer !== prevProps.singer) {
-            if (this.props.singer !== undefined) {
+        if (this.props.singerId !== prevProps.singerId) {
+            if (this.props.singerId !== undefined) {
                 this.fetchData();
-                this.fetchMedias();
             }
         }
     }
@@ -73,11 +91,11 @@ export default class SingerPage extends React.Component {
         if (singer.Albums.value === "") return (<div>No Albums</div>);
         let albums = this.state.singer.Albums.value.split("|");
         return albums.map((val) => {
-            val = val.replace("http://dbpedia.org/resource/", "");
-            val = val.replaceAll("_", " ");
+            let name = val.replace("http://dbpedia.org/resource/", "");
+            name = name.replaceAll("_", " ");
             var reg = new RegExp(/\(.*[Aa]lbum.*\)/, "g");
-            val = val.replace(reg,"");
-            return (<div key={val}>{val}</div>);
+            name = name.replace(reg,"");
+            return (<div key={val} className={"clickable"} onClick={() => this.props.openDetails("album", { albumId: val.trim()})}>{name}</div>);
         });
     }
 
@@ -124,7 +142,7 @@ export default class SingerPage extends React.Component {
     }
 
     render = () => {
-        if (!this.props.singer) {
+        if (!this.props.singerId) {
             return (<div></div>);
         }
         const singer = this.state.singer;
@@ -183,7 +201,7 @@ export default class SingerPage extends React.Component {
         return (
             <div className={"page"}>
                 <div className="panel">
-                    {this.props.singer ?
+                    {this.state.singer ?
                         <>
                             <div className="titlebar">
                                 <h1>{singer.Name.value}</h1>
