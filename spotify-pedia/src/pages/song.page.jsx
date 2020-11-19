@@ -39,11 +39,13 @@ export default class SongPage extends React.Component {
                 ?Track foaf:name ?Name.
                 ?Track dbo:musicalArtist ?ArtistsLinks. 
                 ?Track dbo:album ?AlbumsLinks. 
-                ?Track dbo:genre ?GenresLinks. 
+                OPTIONAL {
+                    ?Track dbo:genre ?GenresLinks.
+                    ?GenresLinks rdfs:label ?Genres. 
+                } 
                 ?Track dbo:releaseDate ?ReleaseDates. 
                 
                 ?AlbumsLinks rdfs:label ?Albums. 
-                ?GenresLinks rdfs:label ?Genres. 
                 ?ArtistsLinks rdfs:label ?Artists. 
                 
                 OPTIONAL { 
@@ -110,7 +112,7 @@ export default class SongPage extends React.Component {
         trackData.albums.forEach((album, index) => {
             res.push(<span key={trackData.albumsId[index]} className={"clickable"} onClick={() => this.props.openDetails("album", { albumId: trackData.albumsId[index]})}>{album}</span>);
             if (index < trackData.albums.length - 1) {
-                res.push(<span>, </span>);
+                res.push(<span key={index}>, </span>);
             }
         });
         return res;
@@ -121,7 +123,7 @@ export default class SongPage extends React.Component {
         trackData.artists.forEach((artist, index) => {
             res.push(<span key={trackData.artistsId[index]} className={"clickable"} onClick={() => trackData.bands.includes(trackData.artistsId[index]) ? this.props.openDetails('group', { groupId: trackData.artistsId[index] }) : this.props.openDetails('artist', { singerId: trackData.artistsId[index]})}>{artist}</span>);
             if (index < trackData.artists.length - 1) {
-                res.push(<span>, </span>);
+                res.push(<span key={index}>, </span>);
             }
         });
         return res;
@@ -231,7 +233,7 @@ export default class SongPage extends React.Component {
         return {
             name: Name.value,
             desc: Desc.value,
-            genres: Genres.value.split('||'),
+            genres: Genres ? Genres.value.split('||') : [],
             artists: Artists.value.split('||'),
             albums: Albums.value.split('||'),
             releaseDate: ReleaseDates.value.split('||'),
