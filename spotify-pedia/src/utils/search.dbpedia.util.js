@@ -6,7 +6,7 @@ function toTitleCase(str) { //cf : https://www.w3docs.com/snippets/javascript/ho
 
 const searchAlbum = async (keyword) => {
     const res = await fetch(
-      `http://dbpedia.org/sparql?query=SELECT DISTINCT ?AlbumName ?ArtistName
+      `http://dbpedia.org/sparql?query=SELECT DISTINCT ?AlbumName ?ArtistName ?Album
         WHERE {
           ?Album a schema:MusicAlbum;
           foaf:name ?AlbumName;

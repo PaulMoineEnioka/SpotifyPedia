@@ -38,17 +38,17 @@ export default class SearchResults extends React.Component {
 
     render = () => {
         return (
-            <>
-                <div className="results">
-                    {this.props.results.map(result => this.renderResult(result))}
-                </div>
-                {this.renderDetails()}
-            </>
+          <>
+              <div className="results">
+                  {this.props.results.map(result => this.renderResult(result))}
+              </div>
+              {this.renderDetails()}
+          </>
         )
     }
 
     renderTrack = (track) => {
-        return <div onClick={() => this.openDetails('track', {trackId: track.Track.value}
+        return <div onClick={() => this.openDetails('track', { trackId: track.Track.value }
         )} className={"result track"} key={"track_" + track.Name.value + track.Artists.value}>
             <span className="type">Track</span>
             <span className="name">{track.Name.value}</span>
@@ -57,7 +57,7 @@ export default class SearchResults extends React.Component {
     };
 
     renderArtist = (singer) => {
-        return <div onClick={() => this.openDetails('artist', {singer})} className="result singer"
+        return <div onClick={() => this.openDetails('artist', { singerId: singer.Id.value })} className="result singer"
                     key={"singer_" + singer.Id.value}>
             <span className="type">Singer</span>
             <span className="name">{singer.Name.value}</span>
@@ -65,11 +65,8 @@ export default class SearchResults extends React.Component {
     }
 
     renderAlbum = (album) => {
-        return <div onClick={() => this.openDetails("album", {
-                album: '"' + album.AlbumName.value + '"@en',
-                artists: '"' + album.ArtistName.value + '"@en'
-            }
-        )} className="result album" key={"album_" + album.AlbumName.value + album.ArtistName.value}>
+        return <div onClick={() => this.openDetails("album", { albumId: album.Album.value })} className="result album"
+                    key={"album_" + album.AlbumName.value + album.ArtistName.value}>
             <span className="type">Album</span>
             <span className="name">{album.AlbumName.value}</span>
             <span className="artists">{album.ArtistName.value}</span>
@@ -77,7 +74,8 @@ export default class SearchResults extends React.Component {
     }
 
     renderGroup = (group) => {
-        return <div onClick={() => this.openDetails('group', { group })} className="result group" key={group.Id.value}>
+        return <div onClick={() => this.openDetails('group', { groupId: group.Id.value })} className="result group"
+                    key={group.Id.value}>
             <span className="type">Group</span>
             <span className="name">{group.Name.value}</span>
         </div>
@@ -93,22 +91,21 @@ export default class SearchResults extends React.Component {
               </DialogTitle>
               {
                   this.state.details.type === 'album' ?
-                    <AlbumPage albumName={this.state.details.album} artistName={this.state.details.artists}
-                               openDetails={this.openDetails} />
+                    <AlbumPage albumId={this.state.details.albumId} openDetails={this.openDetails} />
                     : this.state.details.type === 'artist' ?
-                    <SingerPage singer={this.state.details.singer} openDetails={this.openDetails} />
+                    <SingerPage singerId={this.state.details.singerId} openDetails={this.openDetails} />
                     : this.state.details.type === 'group' ?
-                      <GroupPage group={this.state.details.group} openDetails={this.openDetails} />
+                      <GroupPage groupId={this.state.details.groupId} openDetails={this.openDetails} />
                       : <SongPage openDetails={this.openDetails} trackId={this.state.details.trackId} />
               }
           </Dialog>);
     }
 
     openDetails = (type, data) => {
-        this.setState({showDetails: true, details: {type, ...data}});
+        this.setState({ showDetails: true, details: { type, ...data } });
     };
 
     handleClose = () => {
-        this.setState({showDetails: false});
+        this.setState({ showDetails: false });
     }
 }

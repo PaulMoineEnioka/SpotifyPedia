@@ -20,19 +20,22 @@ export default class AlbumPage extends React.Component {
     }
 
     fetchData = () => {
-        const queryString = `SELECT ?AlbumName ?ArtistName ?Description COUNT(DISTINCT ?TitleName) AS ?Number_of_titles	
-    (GROUP_CONCAT(DISTINCT ?TitleName; SEPARATOR="||") AS ?Titles)	
-    (GROUP_CONCAT(DISTINCT ?Genre_name; SEPARATOR="||") AS ?Genres)	
-    (GROUP_CONCAT(DISTINCT ?Award; SEPARATOR="||") AS ?Awards)	
-    (GROUP_CONCAT(DISTINCT ?Release_Date; SEPARATOR="||") AS ?Release_Dates) WHERE { 
-        ?Album a schema:MusicAlbum; foaf:name ?AlbumName;	
-        dbo:artist ?Artist. ?Artist foaf:name ?ArtistName. 
-        OPTIONAL { { ?Album dbp:title ?Title. ?Title rdfs:label ?TitleName. FILTER(langMatches(lang(?TitleName), "en")). } 
-        UNION { ?Album dbp:title ?TitleName. FILTER(datatype(?TitleName) = rdf:langString).} }
-        OPTIONAL {?Album dbp:award ?Award.}	OPTIONAL {?Album dbo:releaseDate ?Release_Date.	} 
-        OPTIONAL { ?Album dbo:genre ?Genre. ?Genre rdfs:label ?Genre_name.	FILTER(langMatches(lang(?Genre_name), "en")).	}	
-        OPTIONAL {	?Album dbo:abstract ?Description. FILTER(langMatches(lang(?Description), "en")). } FILTER(?AlbumName = ` + this.state.albumName + `). 
-        FILTER(?ArtistName = ` + this.state.albumArtist + `).}`;
+        const queryString = `
+            SELECT ?AlbumName ?ArtistName ?Description COUNT(DISTINCT ?TitleName) AS ?Number_of_titles	
+                (GROUP_CONCAT(DISTINCT ?TitleName; SEPARATOR="||") AS ?Titles)	
+                (GROUP_CONCAT(DISTINCT ?Genre_name; SEPARATOR="||") AS ?Genres)	
+                (GROUP_CONCAT(DISTINCT ?Award; SEPARATOR="||") AS ?Awards)	
+                (GROUP_CONCAT(DISTINCT ?Release_Date; SEPARATOR="||") AS ?Release_Dates) 
+            WHERE { 
+                ?Album a schema:MusicAlbum; foaf:name ?AlbumName;	
+                dbo:artist ?Artist. ?Artist foaf:name ?ArtistName. 
+                OPTIONAL { { ?Album dbp:title ?Title. ?Title rdfs:label ?TitleName. FILTER(langMatches(lang(?TitleName), "en")). } 
+                UNION { ?Album dbp:title ?TitleName. FILTER(datatype(?TitleName) = rdf:langString).} }
+                OPTIONAL {?Album dbp:award ?Award.}	OPTIONAL {?Album dbo:releaseDate ?Release_Date.	} 
+                OPTIONAL { ?Album dbo:genre ?Genre. ?Genre rdfs:label ?Genre_name.	FILTER(langMatches(lang(?Genre_name), "en")).	}	
+                OPTIONAL {	?Album dbo:abstract ?Description. FILTER(langMatches(lang(?Description), "en")). } 
+                FILTER(str(?Album) = "${this.props.albumId}").
+            }`;
 
 
         const formData = new FormData();
