@@ -129,7 +129,6 @@ export default class SongPage extends React.Component {
 
     render = () => {
         const trackData = this.formatTrackData();
-        console.log(trackData);
         return (
             <div className={"page"}>
                 <div className="panel">

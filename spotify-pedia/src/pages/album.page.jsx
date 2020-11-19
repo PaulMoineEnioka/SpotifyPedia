@@ -23,6 +23,7 @@ export default class AlbumPage extends React.Component {
         const queryString = `
             SELECT ?AlbumName ?ArtistName ?Description ?ArtistId ?IsArtistGroup COUNT(DISTINCT ?TitleName) AS ?Number_of_titles	
                 (GROUP_CONCAT(DISTINCT ?TitleName; SEPARATOR="||") AS ?Titles)	
+                (GROUP_CONCAT(DISTINCT ?Title; SEPARATOR="||") AS ?TitlesId)	
                 (GROUP_CONCAT(DISTINCT ?Genre_name; SEPARATOR="||") AS ?Genres)	
                 (GROUP_CONCAT(DISTINCT ?Award; SEPARATOR="||") AS ?Awards)	
                 (GROUP_CONCAT(DISTINCT ?Release_Date; SEPARATOR="||") AS ?Release_Dates) 
@@ -31,14 +32,15 @@ export default class AlbumPage extends React.Component {
                 ?Artist foaf:name ?ArtistName. 
                 ?Artist dbo:wikiPageID ?ArtistId.
                 OPTIONAL { ?Artist rdf:type dbo:Group. ?Artist dbo:wikiPageID ?IsArtistGroup. } 
-                OPTIONAL { { ?Album dbp:title ?Title. ?Title rdfs:label ?TitleName. FILTER(langMatches(lang(?TitleName), "en")). } 
-                UNION { ?Album dbp:title ?TitleName. FILTER(datatype(?TitleName) = rdf:langString).} }
+                OPTIONAL { 
+                    { ?Album dbp:title ?Title. ?Title rdfs:label ?TitleName. FILTER(langMatches(lang(?TitleName), "en")). } 
+                    UNION { ?Album dbp:title ?TitleName. FILTER(datatype(?TitleName) = rdf:langString).} 
+                }
                 OPTIONAL {?Album dbp:award ?Award.}	OPTIONAL {?Album dbo:releaseDate ?Release_Date.	} 
                 OPTIONAL { ?Album dbo:genre ?Genre. ?Genre rdfs:label ?Genre_name.	FILTER(langMatches(lang(?Genre_name), "en")).	}	
                 OPTIONAL {	?Album dbo:abstract ?Description. FILTER(langMatches(lang(?Description), "en")). } 
                 FILTER(str(?Album) = "${this.props.albumId}").
             }`;
-
 
         const formData = new FormData();
         formData.append('query', queryString)
@@ -51,7 +53,6 @@ export default class AlbumPage extends React.Component {
             body: formData // body data type must match "Content-Type" header
         }).then(response => response.json())
             .then(response => {
-                console.log(response);
                     this.setState({
                         albums: response.results.bindings,
                     });

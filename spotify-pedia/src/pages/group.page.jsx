@@ -95,11 +95,11 @@ export default class GroupPage extends React.Component {
         if (group.Albums.value === "") return (<div>No Albums</div>);
         let albums = this.state.group.Albums.value.split("|");
         return albums.map((val) => {
-            val = val.replace("http://dbpedia.org/resource/", "");
-            val = val.replaceAll("_", " ");
+            let name = val.replace("http://dbpedia.org/resource/", "");
+            name = name.replaceAll("_", " ");
             var reg = new RegExp(/\(.*[Aa]lbum.*\)/, "g");
-            val = val.replace(reg, "");
-            return (<div key={val}>{val}</div>);
+            name = name.replace(reg, "");
+            return (<div key={val} onClick={() => this.props.openDetails('album', { albumId: val.trim()})} className={"clickable"}>{name}</div>);
         });
     }
 
@@ -174,13 +174,10 @@ export default class GroupPage extends React.Component {
     render = () => {
 
         if (!this.props.groupId) {
-            console.log("return vide");
             return (<div></div>);
         }
 
         const group = this.state.group;
-        console.log("render() grouppage");
-        console.log(group);
 
         if (!group.Name) {
             group.Name = {};

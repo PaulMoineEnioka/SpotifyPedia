@@ -91,11 +91,11 @@ export default class SingerPage extends React.Component {
         if (singer.Albums.value === "") return (<div>No Albums</div>);
         let albums = this.state.singer.Albums.value.split("|");
         return albums.map((val) => {
-            val = val.replace("http://dbpedia.org/resource/", "");
-            val = val.replaceAll("_", " ");
+            let name = val.replace("http://dbpedia.org/resource/", "");
+            name = name.replaceAll("_", " ");
             var reg = new RegExp(/\(.*[Aa]lbum.*\)/, "g");
-            val = val.replace(reg,"");
-            return (<div key={val}>{val}</div>);
+            name = name.replace(reg,"");
+            return (<div key={val} className={"clickable"} onClick={() => this.props.openDetails("album", { albumId: val.trim()})}>{name}</div>);
         });
     }
 
