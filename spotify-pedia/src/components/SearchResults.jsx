@@ -74,10 +74,11 @@ export default class SearchResults extends React.Component {
     }
 
     renderGroup = (group) => {
+        var groupName = this.noParentheses(group.Name.value);
         return <div onClick={() => this.openDetails('group', { groupId: group.Id.value })} className="result group"
                     key={group.Id.value}>
             <span className="type">Group</span>
-            <span className="name">{group.Name.value}</span>
+            <span className="name">{groupName}</span>
         </div>
     }
 
@@ -99,6 +100,11 @@ export default class SearchResults extends React.Component {
                       : <SongPage openDetails={this.openDetails} trackId={this.state.details.trackId} />
               }
           </Dialog>);
+    }
+    
+    noParentheses = (title) => {
+        var reg = new RegExp(/\(.*[Bb]and.*\)|\(.*[Gg]roup.*\)/, "g");
+        return title.replace(reg,"");
     }
 
     openDetails = (type, data) => {
