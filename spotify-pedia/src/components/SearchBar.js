@@ -18,6 +18,7 @@ class SearchBar extends Component {
 
     onChangeType = (event) => {
         this.setState({ type: event.target.value });
+        this.AutoUpload();
     }
 
     onChangeSearch = async (event) => {
@@ -50,9 +51,7 @@ class SearchBar extends Component {
                     placeholder={"What are you looking for?"}
                     onChange={this.onChangeSearch}
                 />
-                <Button variant="contained" color="primary" onClick={this.updateKeyword}>
-                    Search
-                </Button>
+                
                 <select onChange={this.onChangeType} value={this.state.type}>
                     <option value="artist">Search Artists</option>
                     <option value="group">Search Bands</option>
