@@ -70,6 +70,7 @@ WHERE {
 }
 
 const searchGroup = async (keyword) => {
+  keyword = toTitleCase(keyword);
   const queryString = "select ?Id ?Name where { ?group rdf:type dbo:Group. ?group dbo:wikiPageID ?Id. ?group rdfs:label ?Name. ?group dbo:activeYearsStartYear ?StartYear. FILTER(regex(?Name, \".*" + keyword + ".*\") && langMatches(lang(?Name),\"EN\") ).} LIMIT 20";
 
   const formData = new FormData();
