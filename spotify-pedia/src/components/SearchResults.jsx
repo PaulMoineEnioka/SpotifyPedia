@@ -6,6 +6,7 @@ import AlbumPage from "../pages/album.page";
 import Dialog from "@material-ui/core/Dialog";
 import SongPage from "../pages/song.page";
 import SingerPage from "../pages/singer.page";
+import GroupPage from '../pages/group.page';
 
 export default class SearchResults extends React.Component {
 
@@ -28,6 +29,8 @@ export default class SearchResults extends React.Component {
                 return this.renderArtist(result.data);
             case "album":
                 return this.renderAlbum(result.data);
+            case "group":
+                return this.renderGroup(result.data);
             default:
                 return null;
         }
@@ -73,22 +76,32 @@ export default class SearchResults extends React.Component {
         </div>
     }
 
+    renderGroup = (group) => {
+        return <div onClick={() => this.openDetails('group', { group })} className="result group" key={group.Id.value}>
+            <span className="type">Group</span>
+            <span className="name">{group.Name.value}</span>
+        </div>
+    }
+
     renderDetails = () => {
         return (
-            <Dialog onClose={this.handleClose} open={this.state.showDetails} fullScreen={true}>
-                <DialogTitle id="simple-dialog-title">
-                    <IconButton onClick={this.handleClose}>
-                        <CloseIcon/>
-                    </IconButton>
-                </DialogTitle>
-                {
-                    this.state.details.type === 'album' ?
-                        <AlbumPage albumName={this.state.details.album} artistName={this.state.details.artists} openDetails={this.openDetails}/>
-                        : this.state.details.type === 'artist' ?
-                        <SingerPage singer={this.state.details.singer} openDetails={this.openDetails}/>
-                        : <SongPage openDetails={this.openDetails} trackId={this.state.details.trackId} />
-                }
-            </Dialog>);
+          <Dialog onClose={this.handleClose} open={this.state.showDetails} fullScreen={true}>
+              <DialogTitle id="simple-dialog-title">
+                  <IconButton onClick={this.handleClose}>
+                      <CloseIcon />
+                  </IconButton>
+              </DialogTitle>
+              {
+                  this.state.details.type === 'album' ?
+                    <AlbumPage albumName={this.state.details.album} artistName={this.state.details.artists}
+                               openDetails={this.openDetails} />
+                    : this.state.details.type === 'artist' ?
+                    <SingerPage singer={this.state.details.singer} openDetails={this.openDetails} />
+                    : this.state.details.type === 'group' ?
+                      <GroupPage group={this.state.details.group} openDetails={this.openDetails} />
+                      : <SongPage openDetails={this.openDetails} trackId={this.state.details.trackId} />
+              }
+          </Dialog>);
     }
 
     openDetails = (type, data) => {

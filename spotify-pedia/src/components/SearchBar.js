@@ -55,6 +55,7 @@ class SearchBar extends Component {
                 </Button>
                 <select onChange={this.onChangeType} value={this.state.type}>
                     <option value="artist">Rechercher un artiste</option>
+                    <option value="group">Rechercher un groupe</option>
                     <option value="album">Rechercher un album</option>
                     <option value="track">Rechercher une musique</option>
                 </select>

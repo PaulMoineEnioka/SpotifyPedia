@@ -8,6 +8,8 @@ import AlbumTable from './components/AlbumTable';
 import SingerTable from "./components/SingerTable";
 import SearchResults from "./components/SearchResults";
 import searchDbpediaUtil from './utils/search.dbpedia.util';
+import GroupTable from './components/GroupTable';
+
 
 class App extends Component {
     constructor(props) {
@@ -34,10 +36,15 @@ class App extends Component {
                 const tracks = await searchDbpediaUtil.searchTrack(value);
                 this.setState({ results: [...tracks.map(t => ({ type: 'track', data: t }))] });
                 break;
+            case "group":
+                const groups = await searchDbpediaUtil.searchGroup(value);
+                this.setState({ results: [...groups.map(g => ({ type: 'group', data: g }))] });
+                break;
             default:
                 const albumss = await searchDbpediaUtil.searchAlbum(value);
                 const singerss = await searchDbpediaUtil.searchSinger(value);
                 const trackss = await searchDbpediaUtil.searchTrack(value);
+                const groupss = await searchDbpediaUtil.searchGroup(value);
                 this.setState({
                     results: [...albumss.map(a => ({
                         type: 'album',
@@ -45,7 +52,7 @@ class App extends Component {
                     })), ...singerss.map(s => ({ type: 'artist', data: s })), ...trackss.map(t => ({
                         type: 'track',
                         data: t
-                    }))]
+                    })), ...groupss.map(g => ({ type: 'group', data: g }))]
                 });
         }
     }
@@ -62,7 +69,9 @@ class App extends Component {
     renderTable = () => {
         switch (this.state.type) {
             case 'artist':
-                return <SingerTable keyword={this.state.keyword} />;
+                return <SingerTable keyword={this.state.keyword}/>;
+            case 'group':
+              return <GroupTable keyword={this.state.keyword}/>;
             case 'album':
                 return <AlbumTable keyword={this.state.keyword} />
             case 'track':

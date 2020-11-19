@@ -21,10 +21,27 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
+
+
+
 export default class Group extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            cursorStyle: {
+                cursor: "auto",
+            },
+        };
+    }
+
+
+    mouseOver = () => { //component is clickable
+        this.setState({
+            cursorStyle: {
+                cursor: "pointer",
+            },
+        });
     }
 
     render() {
@@ -70,14 +87,8 @@ export default class Group extends React.Component {
 
         return (
             <StyledTableRow key={this.props.index}>
-                <StyledTableCell>{this.props.group.Name.value}</StyledTableCell>
-                <StyledTableCell>{this.props.group.StartYearString.value}</StyledTableCell>
-                <StyledTableCell>{this.props.group.Genres.value}</StyledTableCell>
-                <StyledTableCell>{this.props.group.Comment.value}</StyledTableCell>
-                <StyledTableCell>{this.props.group.Members.value}</StyledTableCell>
-                <StyledTableCell>{this.props.group.Former_Members.value}</StyledTableCell>
-                <StyledTableCell>{this.props.group.HomepageLink.value}</StyledTableCell>
-                <StyledTableCell>{this.props.group.Albums.value}</StyledTableCell>
+                <StyledTableCell style={this.state.cursorStyle} onMouseOver={this.mouseOver}
+                                 onClick={() => this.props.onClick(this.props.group)}>{this.props.group.Name.value}</StyledTableCell>
             </StyledTableRow>
         );
     }
