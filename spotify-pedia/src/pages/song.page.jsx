@@ -108,7 +108,7 @@ export default class SongPage extends React.Component {
     renderAlbums = (trackData) => {
         const res = [];
         trackData.albums.forEach((album, index) => {
-            res.push(<span className={"clickable"} onClick={() => this.props.openDetails("album", { albumId: trackData.albumsId[index]})}>{album}</span>);
+            res.push(<span key={trackData.albumsId[index]} className={"clickable"} onClick={() => this.props.openDetails("album", { albumId: trackData.albumsId[index]})}>{album}</span>);
             if (index < trackData.albums.length - 1) {
                 res.push(<span>, </span>);
             }
@@ -119,7 +119,7 @@ export default class SongPage extends React.Component {
     renderArtists = (trackData) => {
         const res = [];
         trackData.artists.forEach((artist, index) => {
-            res.push(<span className={"clickable"} onClick={() => trackData.bands.includes(trackData.artistsId[index]) ? this.props.openDetails('group', { groupId: trackData.artistsId[index] }) : this.props.openDetails('artist', { singerId: trackData.artistsId[index]})}>{artist}</span>);
+            res.push(<span key={trackData.artistsId[index]} className={"clickable"} onClick={() => trackData.bands.includes(trackData.artistsId[index]) ? this.props.openDetails('group', { groupId: trackData.artistsId[index] }) : this.props.openDetails('artist', { singerId: trackData.artistsId[index]})}>{artist}</span>);
             if (index < trackData.artists.length - 1) {
                 res.push(<span>, </span>);
             }
