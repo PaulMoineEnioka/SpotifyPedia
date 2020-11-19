@@ -27,10 +27,13 @@ export default class SongPage extends React.Component {
                 (GROUP_CONCAT(DISTINCT ?Artists; SEPARATOR="||") AS ?Artists)
                 (GROUP_CONCAT(DISTINCT ?Genres; SEPARATOR="||") AS ?Genres)  
                 (GROUP_CONCAT(DISTINCT ?Albums; SEPARATOR="||") AS ?Albums) 
+                (GROUP_CONCAT(DISTINCT ?AlbumsLinks; SEPARATOR="||") AS ?AlbumsLinks)
                 (GROUP_CONCAT(DISTINCT ?ReleaseDates; SEPARATOR="||") AS ?ReleaseDates) 
                 (GROUP_CONCAT(DISTINCT ?Producers; SEPARATOR="||") AS ?Producers) 
                 (GROUP_CONCAT(DISTINCT ?RecordLabels; SEPARATOR="||") AS ?RecordLabels) 
                 (GROUP_CONCAT(DISTINCT ?Writers; SEPARATOR="||") AS ?Writers) 
+                (GROUP_CONCAT(DISTINCT ?ArtistIds; SEPARATOR="||") AS ?ArtistIds)
+                (GROUP_CONCAT(DISTINCT ?Bands; SEPARATOR="||") AS ?Bands)
             WHERE { 
                 ?Track rdf:type dbo:Single.
                 ?Track foaf:name ?Name.
@@ -38,6 +41,10 @@ export default class SongPage extends React.Component {
                 ?Track dbo:album ?AlbumsLinks. 
                 ?Track dbo:genre ?GenresLinks. 
                 ?Track dbo:releaseDate ?ReleaseDates. 
+                
+                ?AlbumsLinks rdfs:label ?Albums. 
+                ?GenresLinks rdfs:label ?Genres. 
+                ?ArtistsLinks rdfs:label ?Artists. 
                 
                 OPTIONAL { 
                     ?Track dbo:abstract ?Desc. 
@@ -58,9 +65,15 @@ export default class SongPage extends React.Component {
                     ?WritersLinks rdfs:label ?Writers. 
                     FILTER(langMatches(lang(?Writers), "en")). 
                 }
-                ?AlbumsLinks rdfs:label ?Albums. 
-                ?GenresLinks rdfs:label ?Genres. 
-                ?ArtistsLinks rdfs:label ?Artists. 
+                
+                OPTIONAL {
+                    ?ArtistsLinks dbo:wikiPageID ?ArtistIds. 
+                }
+                
+                OPTIONAL {
+                    ?ArtistsLinks rdf:type dbo:Group.
+                    ?ArtistsLinks dbo:wikiPageID ?Bands.
+                }
                 
                 FILTER(str(?Track) = "${this.props.trackId}").
                 FILTER(langMatches(lang(?Name), "en")).
@@ -92,9 +105,31 @@ export default class SongPage extends React.Component {
         this.setState({medias: {picture: medias.picture, video: medias.video, deezer: medias.deezer }});
     }
 
+    renderAlbums = (trackData) => {
+        const res = [];
+        trackData.albums.forEach((album, index) => {
+            res.push(<span className={"clickable"} onClick={() => this.props.openDetails("album", { albumId: trackData.albumsId[index]})}>{album}</span>);
+            if (index < trackData.albums.length - 1) {
+                res.push(<span>, </span>);
+            }
+        });
+        return res;
+    }
+
+    renderArtists = (trackData) => {
+        const res = [];
+        trackData.artists.forEach((artist, index) => {
+            res.push(<span className={"clickable"} onClick={() => trackData.bands.includes(trackData.artistsId[index]) ? this.props.openDetails('group', { groupId: trackData.artistsId[index] }) : this.props.openDetails('artist', { singerId: trackData.artistsId[index]})}>{artist}</span>);
+            if (index < trackData.artists.length - 1) {
+                res.push(<span>, </span>);
+            }
+        });
+        return res;
+    }
+
     render = () => {
         const trackData = this.formatTrackData();
-
+        console.log(trackData);
         return (
             <div className={"page"}>
                 <div className="panel">
@@ -102,7 +137,7 @@ export default class SongPage extends React.Component {
                         <>
                             <div className="titlebar">
                                 <h1>{trackData.name}</h1>
-                                <h2 onClick={() => this.props.openDetails('artist', trackData.artists[0])} className={"clickable"}>{trackData.artists.join(', ')}</h2>
+                                <h2>{this.renderArtists(trackData)}</h2>
                             </div>
                             <div className="topbar">
                                 <div>
@@ -113,7 +148,7 @@ export default class SongPage extends React.Component {
                             </div>
                             <div className="main-infos">
                                 <div>
-                                    <strong>Album{trackData.albums.length > 1 ? 's' : ''}:</strong> {trackData.albums.join(', ')}
+                                    <strong>Album{trackData.albums.length > 1 ? 's' : ''}:</strong> {this.renderAlbums(trackData)}
                                 </div>
                                 <div><strong>First release:</strong> {trackData.releaseDate[0]}</div>
                             </div>
@@ -193,7 +228,7 @@ export default class SongPage extends React.Component {
 
     formatTrackData = () => {
         if (!this.state.song) return null;
-        const {Name, Desc, Genres, Artists, Albums, ReleaseDates, Producers, RecordLabels, Writers} = this.state.song;
+        const {Name, Desc, Genres, Artists, Albums, ReleaseDates, Producers, RecordLabels, Writers, AlbumsLinks, ArtistIds, Bands} = this.state.song;
         return {
             name: Name.value,
             desc: Desc.value,
@@ -203,7 +238,10 @@ export default class SongPage extends React.Component {
             releaseDate: ReleaseDates.value.split('||'),
             producers: Producers.value ? Producers.value.split('||') : [],
             recordLabels: RecordLabels.value.split('||'),
-            writers: Writers.value.split('||')
+            writers: Writers.value.split('||'),
+            albumsId: AlbumsLinks.value.split('||'),
+            artistsId: ArtistIds.value.split('||'),
+            bands: Bands.value.split('||'),
         }
     }
 

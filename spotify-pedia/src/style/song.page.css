@@ -93,6 +93,10 @@
     text-decoration: underline;
 }
 
+.page .clickable:hover {
+    cursor: pointer;
+}
+
 table td button {
     border: none;
     background: none;
