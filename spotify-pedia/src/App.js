@@ -3,12 +3,9 @@ import './App.css';
 import { Component } from "react";
 import React from "react";
 import SearchBar from "./components/SearchBar";
-import TrackTable from "./components/TrackTable";
-import AlbumTable from './components/AlbumTable';
-import SingerTable from "./components/SingerTable";
 import SearchResults from "./components/SearchResults";
 import searchDbpediaUtil from './utils/search.dbpedia.util';
-import GroupTable from './components/GroupTable';
+import './style/style.css';
 
 
 class App extends Component {
@@ -64,21 +61,6 @@ class App extends Component {
               <SearchResults results={this.state.results} />
           </div>
         );
-    }
-
-    renderTable = () => {
-        switch (this.state.type) {
-            case 'artist':
-                return <SingerTable keyword={this.state.keyword}/>;
-            case 'group':
-              return <GroupTable keyword={this.state.keyword}/>;
-            case 'album':
-                return <AlbumTable keyword={this.state.keyword} />
-            case 'track':
-                return <TrackTable keyword={this.state.keyword} />
-            default:
-                return null;
-        }
     }
 }
 

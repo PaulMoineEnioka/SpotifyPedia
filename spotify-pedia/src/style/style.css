@@ -57,10 +57,11 @@
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
+    text-align: justify;
 }
 
 .page .additional-infos > div {
-    width: 25%;
+    width: 100%;
 }
 
 .page .additional-infos > div ul {

@@ -1,6 +1,6 @@
 import React from "react";
 import mediasUtil from '../utils/medias.util';
-import "../style/song.page.css";
+import "../style/style.css";
 import {CircularProgress} from "@material-ui/core";
 
 export default class GroupPage extends React.Component {

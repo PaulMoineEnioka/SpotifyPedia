@@ -1,6 +1,5 @@
 import React from "react";
 import {CircularProgress} from '@material-ui/core';
-import "../style/album.page.css";
 import mediasUtil from '../utils/medias.util';
 
 

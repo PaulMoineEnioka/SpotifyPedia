@@ -1,7 +1,6 @@
 import React from "react";
 import {CircularProgress} from "@material-ui/core";
 import mediasUtil from '../utils/medias.util';
-import "../style/song.page.css";
 
 export default class SongPage extends React.Component {
 
@@ -238,8 +237,8 @@ export default class SongPage extends React.Component {
             albums: Albums.value.split('||'),
             releaseDate: ReleaseDates.value.split('||'),
             producers: Producers.value ? Producers.value.split('||') : [],
-            recordLabels: RecordLabels.value.split('||'),
-            writers: Writers.value.split('||'),
+            recordLabels: RecordLabels ? RecordLabels.value.split('||') : [],
+            writers: Writers ? Writers.value.split('||') : [],
             albumsId: AlbumsLinks.value.split('||'),
             artistsId: ArtistIds.value.split('||'),
             bands: Bands.value.split('||'),
