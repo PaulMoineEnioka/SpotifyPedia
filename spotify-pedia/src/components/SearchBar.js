@@ -43,7 +43,10 @@ class SearchBar extends Component {
             padding: "0.75rem"
         };
         return (
-            <div>
+            <div style={{
+                position: 'relative', left: '25%'
+            }}
+            >
                 <input
                     style={BarStyling}
                     key="search-bar"
