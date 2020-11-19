@@ -66,7 +66,7 @@ export default class SearchResults extends React.Component {
 
     renderAlbum = (album) => {
         return <div onClick={() => this.openDetails("album", { albumId: album.Album.value })} className="result album"
-                    key={"album_" + album.AlbumName.value + album.ArtistName.value}>
+                    key={album.Album.value}>
             <span className="type">Album</span>
             <span className="name">{album.AlbumName.value}</span>
             <span className="artists">{album.ArtistName.value}</span>

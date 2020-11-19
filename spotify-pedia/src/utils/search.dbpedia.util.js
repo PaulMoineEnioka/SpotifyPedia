@@ -5,6 +5,7 @@ function toTitleCase(str) { //cf : https://www.w3docs.com/snippets/javascript/ho
 }
 
 const searchAlbum = async (keyword) => {
+  // ! TODO fix the problem here I think ArtistName should be GROUP_CONCAT
     const res = await fetch(
       `http://dbpedia.org/sparql?query=SELECT DISTINCT ?AlbumName ?ArtistName ?Album
         WHERE {
