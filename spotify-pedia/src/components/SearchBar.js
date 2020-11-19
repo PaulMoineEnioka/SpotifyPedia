@@ -58,6 +58,7 @@ class SearchBar extends Component {
                     <option value="group">Search Bands</option>
                     <option value="album">Search Albums</option>
                     <option value="track">Search Songs</option>
+                    <option value="all">Search All</option>
                 </select>
             </div>
         );
