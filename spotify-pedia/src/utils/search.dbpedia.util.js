@@ -7,13 +7,14 @@ function toTitleCase(str) { //cf : https://www.w3docs.com/snippets/javascript/ho
 const searchAlbum = async (keyword) => {
   // ! TODO fix the problem here I think ArtistName should be GROUP_CONCAT
     const res = await fetch(
-      `http://dbpedia.org/sparql?query=SELECT DISTINCT ?AlbumName ?ArtistName ?Album
+      `http://dbpedia.org/sparql?query=SELECT DISTINCT ?AlbumName ?Album
+      (GROUP_CONCAT(DISTINCT ?ArtistName; SEPARATOR=", ") AS ?ArtistsNames)
         WHERE {
           ?Album a schema:MusicAlbum;
           foaf:name ?AlbumName;
           dbo:artist ?Artist.
 
-          ?Artist foaf:name ?ArtistName.
+          ?Artist rdfs:label ?ArtistName.
           
           FILTER(regex(lcase(str(?AlbumName)),   ".*${keyword}.*")).
           FILTER(langMatches(lang(?AlbumName), "en")). 

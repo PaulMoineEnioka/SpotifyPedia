@@ -69,7 +69,7 @@ export default class SearchResults extends React.Component {
                     key={album.Album.value}>
             <span className="type">Album</span>
             <span className="name">{album.AlbumName.value}</span>
-            <span className="artists">{album.ArtistName.value}</span>
+            <span className="artists">{album.ArtistsNames.value}</span>
         </div>
     }
 

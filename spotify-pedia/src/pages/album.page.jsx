@@ -28,7 +28,7 @@ export default class AlbumPage extends React.Component {
                 (GROUP_CONCAT(DISTINCT ?Release_Date; SEPARATOR="||") AS ?Release_Dates) 
             WHERE { 
                 ?Album a schema:MusicAlbum; foaf:name ?AlbumName;	dbo:artist ?Artist. 
-                ?Artist foaf:name ?ArtistName. 
+                ?Artist rdfs:label ?ArtistName. 
                 ?Artist dbo:wikiPageID ?ArtistId.
                 OPTIONAL { ?Artist rdf:type dbo:Group. ?Artist dbo:wikiPageID ?IsArtistGroup. } 
                 OPTIONAL { 
@@ -39,6 +39,7 @@ export default class AlbumPage extends React.Component {
                 OPTIONAL { ?Album dbo:genre ?Genre. ?Genre rdfs:label ?Genre_name.	FILTER(langMatches(lang(?Genre_name), "en")).	}	
                 OPTIONAL {	?Album dbo:abstract ?Description. FILTER(langMatches(lang(?Description), "en")). } 
                 FILTER(str(?Album) = "${this.props.albumId}").
+                FILTER(langMatches(lang(?ArtistName), "en")).  
             }`;
 
         const formData = new FormData();
