@@ -49,7 +49,6 @@ export default class SingerPage extends React.Component {
             body: formData
         }).then(response => response.json())
             .then(response => {
-                    this.state.singer = response.results.bindings[0];
                     this.setState({
                         singer: response.results.bindings[0],
                     });

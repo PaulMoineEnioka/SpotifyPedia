@@ -51,7 +51,6 @@ export default class GroupPage extends React.Component {
             body: formData
         }).then(response => response.json())
           .then(response => {
-                this.state.group = response.results.bindings[0];
                 this.setState({
                     group: response.results.bindings[0],
                 });

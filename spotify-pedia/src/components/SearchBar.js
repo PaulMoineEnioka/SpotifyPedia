@@ -1,6 +1,5 @@
 import React from "react";
 import { Component } from "react";
-import Button from '@material-ui/core/Button';
 
 
 class SearchBar extends Component {

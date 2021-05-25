@@ -51,6 +51,9 @@ class App extends Component {
                         data: t
                     })), ...groupss.map(g => ({ type: 'group', data: g }))]
                 });
+                break;
+            default:
+                break;
         }
     }
 
