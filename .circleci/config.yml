@@ -1,0 +1,144 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.1
+
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:15.1
+
+references:
+  install-modules: &install-modules
+    run:
+      name: Install npm dependencies
+      command: npm --prefix spotify-pedia install
+  build: &build
+    run:
+      name: Build application
+      command: npm run --prefix spotify-pedia build
+
+commands:
+  init:
+    description: Init environment
+    steps:
+      -  checkout
+      - *install-modules
+  pack-and-deliver:
+    description: Deliver the application
+    parameters:
+      build-name:
+        type: string
+        description: Build artifact name
+      ansible-name:
+        type: string
+        description: Ansible configuration artifact name
+    steps:
+      - store_artifacts:
+          path: spotify-pedia/build
+          name: << parameters.build-name >>
+      - store_artifacts:
+          path: ci/ansible
+          name: << parameters.ansible-name >>
+
+jobs:
+  lint:
+    executor: node-executor
+    steps:
+      - init
+      - run: echo Lint the code
+  format:
+    executor: node-executor
+    steps:
+      - init
+      - run: echo Format the code
+  prebuild-tests:
+    executor: node-executor
+    steps:
+      - init
+      - run: echo Run prebuild tests
+  build:
+    executor: node-executor
+    steps:
+      - init
+      - *build
+  build-test-deliver_dev:
+    executor: node-executor
+    steps:
+      - init
+      - *build
+      - run: echo Run unit tests
+      - run: echo Run integration tests
+      - run: echo Run end to end tests
+      - pack-and-deliver:
+          build-name: test-spotify-pedia
+          ansible-name: test-ansible
+          
+  build-test-deliver_validation:
+    executor: node-executor
+    steps:
+      - init
+      - *build
+      - run: echo Security tests
+      - pack-and-deliver:
+          build-name: validation-spotify-pedia
+          ansible-name: validation-ansible
+  build_and_deliver:
+    executor: node-executor
+    parameters:
+      env-keyword:
+        type: string
+        description: Environment keyword to use in artifacts
+    steps:
+      - init
+      - *build
+      - pack-and-deliver:
+          build-name: << parameters.env-keyword >>-spotify-pedia
+          ansible-name: << parameters.env-keyword >>-ansible
+  deploy:
+    executor: node-executor
+    steps:
+      - run: echo Deploying
+
+
+workflows:
+  integration: 
+    when: 
+      matches: 
+        pattern: "^feature/.+$"
+        value: << pipeline.git.branch >>
+    jobs:
+      - lint
+      - format
+      - prebuild-tests
+      - build
+  dev_test:
+    when:
+      equal: [develop, << pipeline.git.branch >>]
+    jobs:
+      - build-test-deliver_dev
+  test_validation:
+    when:
+      equal: [validation, << pipeline.git.branch >>]
+    jobs:
+      - build-test-deliver_validation
+  validation_preprod:
+    when:
+      equal: [master, << pipeline.git.branch >>]
+    jobs:
+      - build_and_deliver:
+          env-keyword: preprod
+      - deploy:
+          requires:
+            - build_and_deliver
+  preprod_prod:
+    when:
+      matches:
+        pattern: "^release/.+$"
+        value: << pipeline.git.branch >>
+    jobs:
+      - build_and_deliver:
+          env-keyword: prod
+      - deploy:
+          requires:
+            - build_and_deliver
